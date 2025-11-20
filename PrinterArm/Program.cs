@@ -1,0 +1,63 @@
+﻿using Sandbox.Game.EntityComponents;
+using Sandbox.ModAPI.Ingame;
+using Sandbox.ModAPI.Interfaces;
+using SpaceEngineers.Game.ModAPI.Ingame;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using VRage;
+using VRage.Collections;
+using VRage.Game;
+using VRage.Game.Components;
+using VRage.Game.GUI.TextPanel;
+using VRage.Game.ModAPI.Ingame;
+using VRage.Game.ModAPI.Ingame.Utilities;
+using VRage.Game.ObjectBuilders.Definitions;
+using VRageMath;
+
+namespace IngameScript
+{
+    partial class Program : MyGridProgram
+    {
+        private SystemCoordinator _systemCoordinator;
+        public static Action<string> DebugEcho { get; private set; }
+        //public static DebugAPI DebugDraw { get; private set; }
+        public static IMyProgrammableBlock MePB { get; private set; }
+        public static IMyGridTerminalSystem GTS { get; private set; }
+        public static IMyIntergridCommunicationSystem IGCS { get; private set; }
+        public static IMyGridProgramRuntimeInfo RuntimeInfo { get; private set; }
+
+        public static int DebugCounter { get; set; } = 0;
+
+        public Program()
+        {
+            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+            GTS = GridTerminalSystem;
+            IGCS = IGC;
+            MePB = Me;
+            DebugEcho = Echo;
+            //DebugDraw = new DebugAPI(this, true);
+            RuntimeInfo = Runtime;
+
+            _systemCoordinator = new SystemCoordinator();
+        }
+
+        public void Save()
+        {
+
+        }
+
+        public void Main(string argument, UpdateType updateSource)
+        {
+            if (argument != null)
+            {
+                _systemCoordinator.Command(argument);
+            }
+            //DebugDraw.RemoveAll();
+            _systemCoordinator.Run();
+        }
+    }
+}
