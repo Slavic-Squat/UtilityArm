@@ -32,9 +32,6 @@ namespace IngameScript
             private UserInput _remoteInput;
             private ArmControl _armControl;
             private IEnumerator<bool> _anchorCoroutine;
-            private float _yaw;
-            private float _pitch;
-            private float _roll;
 
             public bool ArmCtrl { get; private set; } = false;
             public bool RemoteCtrl { get; private set; } = false;
@@ -63,29 +60,13 @@ namespace IngameScript
                 _remoteInput.Run(time);
                 _display0.WriteText(Status());
 
-                Vector3 gravVector = _armController.GetNaturalGravity();
-                Matrix inputDir = Matrix.Identity;
-                Vector3 rightVector = Vector3.Normalize(Vector3.Cross(_armController.WorldMatrix.Backward, gravVector));
-                Vector3 backwardVector = Vector3.Normalize(Vector3.Cross(gravVector, rightVector));
-                Vector3 upVector = -1f * Vector3.Normalize(gravVector);
-                inputDir.Backward = backwardVector;
-                inputDir.Right = rightVector;
-                inputDir.Up = upVector;
-
-                Quaternion roll = Quaternion.CreateFromAxisAngle(backwardVector, _roll);
-                Quaternion pitch = Quaternion.CreateFromAxisAngle(rightVector, _pitch);
-                Quaternion yaw = Quaternion.CreateFromAxisAngle(upVector, _yaw);
-                Quaternion totalRot = yaw * pitch * roll;
-                inputDir = Matrix.Transform(inputDir, totalRot);
-                Matrix inputDirLocal = inputDir * Matrix.Transpose(_armController.WorldMatrix.GetOrientation());
-
                 if (!RemoteCtrl)
                 {
-                    return _armControl.Control(_userInput, inputDirLocal);
+                    return _armControl.Control(_userInput);
                 }
                 else
                 {
-                    return _armControl.Control(_remoteInput, inputDirLocal);
+                    return _armControl.Control(_remoteInput);
                 }                
             }
 
@@ -106,30 +87,6 @@ namespace IngameScript
             {
                 if (!ArmCtrl) return false;
                 return _armControl.ToggleOrientationControl();
-            }
-
-            public bool AdjustYaw(float amountDeg)
-            {
-                if (!ArmCtrl) return false;
-                _yaw += MathHelper.ToRadians(amountDeg);
-                _yaw = MathHelper.Clamp(_yaw, MathHelper.ToRadians(-45), MathHelper.ToRadians(45));
-                return true;
-            }
-
-            public bool AdjustPitch(float amountDeg)
-            {
-                if (!ArmCtrl) return false;
-                _pitch += MathHelper.ToRadians(amountDeg);
-                _pitch = MathHelper.Clamp(_pitch, MathHelper.ToRadians(-45), MathHelper.ToRadians(45));
-                return true;
-            }
-
-            public bool AdjustRoll(float amountDeg)
-            {
-                if (!ArmCtrl) return false;
-                _roll += MathHelper.ToRadians(amountDeg);
-                _roll = MathHelper.Clamp(_roll, MathHelper.ToRadians(-45), MathHelper.ToRadians(45));
-                return true;
             }
 
             public string Status()
