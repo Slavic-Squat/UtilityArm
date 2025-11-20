@@ -96,9 +96,6 @@ namespace IngameScript
                 sb.AppendLine($"  Arm Control: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  Remote Control: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  Orientation Control: {(_armControl.OCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  Yaw: {MathHelper.ToDegrees(_yaw):F2} deg");
-                sb.AppendLine($"  Pitch: {MathHelper.ToDegrees(_pitch):F2} deg");
-                sb.AppendLine($"  Roll: {MathHelper.ToDegrees(_roll):F2} deg");
                 sb.AppendLine("  Arm Position:");
                 sb.AppendLine($"    X: {_armControl.EEPosition.X:F2}, Y: {_armControl.EEPosition.Y:F2}, Z: {_armControl.EEPosition.Z:F2}");
                 return sb.ToString();

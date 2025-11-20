@@ -51,9 +51,6 @@ namespace IngameScript
                 _commands["TOGGLE_ARM_CTRL"] = (args) => ToggleArmControl();
                 _commands["TOGGLE_REMOTE_CTRL"] = (args) => ToggleRemoteControl();
                 _commands["TOGGLE_O_CTRL"] = (args) => ToggleOrientationControl();
-                _commands["ADJUST_YAW"] = (args) => AdjustYaw(args[0]);
-                _commands["ADJUST_PITCH"] = (args) => AdjustPitch(args[0]);
-                _commands["ADJUST_ROLL"] = (args) => AdjustRoll(args[0]);
             }
 
             public void Run()
@@ -81,30 +78,6 @@ namespace IngameScript
             public bool ToggleOrientationControl()
             {
                 return PrinterArm.ToggleOrientationControl();
-            }
-
-            public bool AdjustYaw(string amountDegStr)
-            {
-                float amountDeg;
-                if (!float.TryParse(amountDegStr, out amountDeg))
-                    return false;
-                return PrinterArm.AdjustYaw(amountDeg);
-            }
-
-            public bool AdjustPitch(string amountDegStr)
-            {
-                float amountDeg;
-                if (!float.TryParse(amountDegStr, out amountDeg))
-                    return false;
-                return PrinterArm.AdjustPitch(amountDeg);
-            }
-
-            public bool AdjustRoll(string amountDegStr)
-            {
-                float amountDeg;
-                if (!float.TryParse(amountDegStr, out amountDeg))
-                    return false;
-                return PrinterArm.AdjustRoll(amountDeg);
             }
         }
     }
