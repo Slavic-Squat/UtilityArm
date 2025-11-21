@@ -119,12 +119,12 @@ namespace IngameScript
 
                 Vector3 J1v = Vector3.Cross(H0_1.Up, currentCoord - H0_1.Translation);
                 //Vector3 J1w = H0_1.Up;
-                Vector3 J1w = Vector3.TransformNormal(H0_1.Up, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J1w = Vector3.TransformNormal(H0_1.Up, Matrix.Transpose(HT.GetOrientation()));
                 double[] J1 = new double[6] { J1v.X, J1v.Y, J1v.Z, J1w.X, J1w.Y, J1w.Z };
 
                 Vector3 J2v = Vector3.Cross(H0_2.Right, currentCoord - H0_2.Translation);
                 //Vector3 J2w = H0_2.Right;
-                Vector3 J2w = Vector3.TransformNormal(H0_2.Right, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J2w = Vector3.TransformNormal(H0_2.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J2 = new double[6] { J2v.X, J2v.Y, J2v.Z, J2w.X, J2w.Y, J2w.Z };
 
                 Vector3 J3v = -1f * H0_3.Backward;
@@ -133,7 +133,7 @@ namespace IngameScript
 
                 Vector3 J4v = Vector3.Cross(H0_4.Right, currentCoord - H0_4.Translation);
                 //Vector3 J4w = H0_4.Right;
-                Vector3 J4w = Vector3.TransformNormal(H0_4.Right, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J4w = Vector3.TransformNormal(H0_4.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J4 = new double[6] { J4v.X, J4v.Y, J4v.Z, J4w.X, J4w.Y, J4w.Z };
 
                 Vector3 J5v = -1f * H0_5.Backward;
@@ -142,17 +142,17 @@ namespace IngameScript
 
                 Vector3 J6v = Vector3.Cross(H0_6.Up, currentCoord - H0_6.Translation);
                 //Vector3 J6w = H0_6.Up;
-                Vector3 J6w = Vector3.TransformNormal(H0_6.Up, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J6w = Vector3.TransformNormal(H0_6.Up, Matrix.Transpose(HT.GetOrientation()));
                 double[] J6 = new double[6] { J6v.X, J6v.Y, J6v.Z, J6w.X, J6w.Y, J6w.Z };
 
                 Vector3 J7v = Vector3.Cross(H0_7.Right, currentCoord - H0_7.Translation);
                 //Vector3 J7w = H0_7.Right;
-                Vector3 J7w = Vector3.TransformNormal(H0_7.Right, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J7w = Vector3.TransformNormal(H0_7.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J7 = new double[6] { J7v.X, J7v.Y, J7v.Z, J7w.X, J7w.Y, J7w.Z };
 
                 Vector3 J8v = Vector3.Cross(H0_8.Backward, currentCoord - H0_8.Translation);
                 //Vector3 J8w = H0_8.Backward;
-                Vector3 J8w = Vector3.TransformNormal(H0_8.Backward, Matrix.Transpose(H0_8.GetOrientation()));
+                Vector3 J8w = Vector3.TransformNormal(H0_8.Backward, Matrix.Transpose(HT.GetOrientation()));
                 double[] J8 = new double[6] { J8v.X, J8v.Y, J8v.Z, J8w.X, J8w.Y, J8w.Z };
 
                 double[,] J = new double[6, 9]
