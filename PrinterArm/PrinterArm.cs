@@ -31,7 +31,6 @@ namespace IngameScript
             private UserInput _userInput;
             private UserInput _remoteInput;
             private ArmControl _armControl;
-            private IEnumerator<bool> _anchorCoroutine;
 
             public bool ArmCtrl { get; private set; } = false;
             public bool RemoteCtrl { get; private set; } = false;
@@ -59,6 +58,11 @@ namespace IngameScript
                 _userInput.Run(time);
                 _remoteInput.Run(time);
                 _display0.WriteText(Status());
+
+                if (!ArmCtrl)
+                {
+                    return false;
+                }
 
                 if (!RemoteCtrl)
                 {
@@ -92,7 +96,7 @@ namespace IngameScript
             public string Status()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("[DrillArm Status]");
+                sb.AppendLine("[Printer Arm Status]");
                 sb.AppendLine($"  Arm Control: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  Remote Control: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  Orientation Control: {(_armControl.OCtrl ? "ON" : "OFF")}");

@@ -222,7 +222,7 @@ namespace IngameScript
                 for (int i = 0; i < n; i++)
                     I[i, i] = 1.0;
                 double[,] J_pi_J = MultiplyMatrices(J_pi, J);
-                return AddMatrices(I, MultiplyScalar(J_pi_J, -1.0));
+                return SubtractMatrices(I, J_pi_J);
             }
 
             // ============================================================================
@@ -397,6 +397,19 @@ namespace IngameScript
                 return result;
             }
 
+            public static double[,] SubtractMatrices(double[,] A, double[,] B)
+            {
+                int rows = A.GetLength(0);
+                int cols = A.GetLength(1);
+                if (rows != B.GetLength(0) || cols != B.GetLength(1))
+                    throw new ArgumentException("Matrix dimensions don't match for subtraction");
+                double[,] result = new double[rows, cols];
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        result[i, j] = A[i, j] - B[i, j];
+                return result;
+            }
+
             public static double[,] Transpose(double[,] matrix)
             {
                 int rows = matrix.GetLength(0);
@@ -462,6 +475,20 @@ namespace IngameScript
                 return result;
             }
 
+            public static double[] DivideVectorVector(double[] a, double[] b)
+            {
+                if (a.Length != b.Length)
+                    throw new ArgumentException("Vectors must be the same length");
+                double[] result = new double[a.Length];
+                for (int i = 0; i < a.Length; i++)
+                {
+                    if (Math.Abs(b[i]) < 1e-10)
+                        throw new DivideByZeroException("Cannot divide by zero in vector division");
+                    result[i] = a[i] / b[i];
+                }
+                return result;
+            }
+
             public static double DotProduct(double[] a, double[] b)
             {
                 if (a.Length != b.Length)
@@ -470,6 +497,60 @@ namespace IngameScript
                 for (int i = 0; i < a.Length; i++)
                     result += a[i] * b[i];
                 return result;
+            }
+
+            public static double[] AddVectors(double[] a, double[] b)
+            {
+                if (a.Length != b.Length)
+                    throw new ArgumentException("Vectors must be the same length");
+                double[] result = new double[a.Length];
+                for (int i = 0; i < a.Length; i++)
+                    result[i] = a[i] + b[i];
+                return result;
+            }
+
+            public static double[] SubtractVectors(double[] a, double[] b)
+            {
+                if (a.Length != b.Length)
+                    throw new ArgumentException("Vectors must be the same length");
+                double[] result = new double[a.Length];
+                for (int i = 0; i < a.Length; i++)
+                    result[i] = a[i] - b[i];
+                return result;
+            }
+
+            public static double[] ReciprocalVector(double[] vector)
+            {
+                double[] result = new double[vector.Length];
+                for (int i = 0; i < vector.Length; i++)
+                {
+                    if (Math.Abs(vector[i]) < 1e-10)
+                        throw new DivideByZeroException("Cannot take reciprocal of zero");
+                    result[i] = 1.0 / vector[i];
+                }
+                return result;
+            }
+
+            public static double MaxElement(double[] vector)
+            {
+                double max = double.NegativeInfinity;
+                for (int i = 0; i < vector.Length; i++)
+                {
+                    if (vector[i] > max)
+                        max = vector[i];
+                }
+                return max;
+            }
+
+            public static double MinElement(double[] vector)
+            {
+                double min = double.PositiveInfinity;
+                for (int i = 0; i < vector.Length; i++)
+                {
+                    if (vector[i] < min)
+                        min = vector[i];
+                }
+                return min;
             }
 
             public static double Norm(double[] vector)
