@@ -24,6 +24,7 @@ namespace IngameScript
     {
         public class ArmControl
         {
+            private Vector3 _baseVector;
             private PistonSeries _joint0;
             private Vector3 _seg0Vector;
             private Rotor _joint1;
@@ -62,15 +63,16 @@ namespace IngameScript
                 _joint7 = new Rotor("Joint7");
                 _joint8 = new Rotor("Joint8");
 
-                _seg0Vector = new Vector3(0, 0, 0);
-                _seg1Vector = new Vector3(0, 0, 0);
-                _seg2Vector = new Vector3(0, 0, 0);
-                _seg3Vector = new Vector3(0, 0, 0);
-                _seg4Vector = new Vector3(0, 0, 0);
-                _seg5Vector = new Vector3(0, 0, 0);
-                _seg6Vector = new Vector3(0, 0, 0);
-                _seg7Vector = new Vector3(0, 0, 0);
-                _seg8Vector = new Vector3(0, 0, 0);
+                _baseVector = new Vector3(0, 0, -18.2f);
+                _seg0Vector = new Vector3(0, -4.15f, -1.25f);
+                _seg1Vector = new Vector3(3.95f, -1.25f, 0);
+                _seg2Vector = new Vector3(1.25f, 0, -6.35f);
+                _seg3Vector = new Vector3(-3.95f, 0, -1.25f);
+                _seg4Vector = new Vector3(-1.25f, 0, -6.4f);
+                _seg5Vector = new Vector3(0, 0, -1.25f);
+                _seg6Vector = new Vector3(0, 0, -1.5f);
+                _seg7Vector = new Vector3(0, 0, -1.7f);
+                _seg8Vector = new Vector3(0, 0, -3.5f);
             }
 
             public bool Control(UserInput input)
@@ -115,11 +117,13 @@ namespace IngameScript
                 double[] J0 = new double[6] { J0v.X, J0v.Y, J0v.Z, J0w.X, J0w.Y, J0w.Z };
 
                 Vector3 J1v = Vector3.Cross(H0_1.Up, currentCoord - H0_1.Translation);
-                Vector3 J1w = H0_1.Up;
+                //Vector3 J1w = H0_1.Up;
+                Vector3 J1w = Vector3.TransformNormal(H0_1.Up, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J1 = new double[6] { J1v.X, J1v.Y, J1v.Z, J1w.X, J1w.Y, J1w.Z };
 
                 Vector3 J2v = Vector3.Cross(H0_2.Right, currentCoord - H0_2.Translation);
-                Vector3 J2w = H0_2.Right;
+                //Vector3 J2w = H0_2.Right;
+                Vector3 J2w = Vector3.TransformNormal(H0_2.Right, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J2 = new double[6] { J2v.X, J2v.Y, J2v.Z, J2w.X, J2w.Y, J2w.Z };
 
                 Vector3 J3v = -1f * H0_3.Backward;
@@ -127,7 +131,8 @@ namespace IngameScript
                 double[] J3 = new double[6] { J3v.X, J3v.Y, J3v.Z, J3w.X, J3w.Y, J3w.Z };
 
                 Vector3 J4v = Vector3.Cross(H0_4.Right, currentCoord - H0_4.Translation);
-                Vector3 J4w = H0_4.Right;
+                //Vector3 J4w = H0_4.Right;
+                Vector3 J4w = Vector3.TransformNormal(H0_4.Right, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J4 = new double[6] { J4v.X, J4v.Y, J4v.Z, J4w.X, J4w.Y, J4w.Z };
 
                 Vector3 J5v = -1f * H0_5.Backward;
@@ -135,15 +140,18 @@ namespace IngameScript
                 double[] J5 = new double[6] { J5v.X, J5v.Y, J5v.Z, J5w.X, J5w.Y, J5w.Z };
 
                 Vector3 J6v = Vector3.Cross(H0_6.Up, currentCoord - H0_6.Translation);
-                Vector3 J6w = H0_6.Up;
+                //Vector3 J6w = H0_6.Up;
+                Vector3 J6w = Vector3.TransformNormal(H0_6.Up, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J6 = new double[6] { J6v.X, J6v.Y, J6v.Z, J6w.X, J6w.Y, J6w.Z };
 
                 Vector3 J7v = Vector3.Cross(H0_7.Right, currentCoord - H0_7.Translation);
-                Vector3 J7w = H0_7.Right;
+                //Vector3 J7w = H0_7.Right;
+                Vector3 J7w = Vector3.TransformNormal(H0_7.Right, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J7 = new double[6] { J7v.X, J7v.Y, J7v.Z, J7w.X, J7w.Y, J7w.Z };
 
                 Vector3 J8v = Vector3.Cross(H0_8.Backward, currentCoord - H0_8.Translation);
-                Vector3 J8w = H0_8.Backward;
+                //Vector3 J8w = H0_8.Backward;
+                Vector3 J8w = Vector3.TransformNormal(H0_8.Backward, Matrix.Transpose(H0_8.GetOrientation()));
                 double[] J8 = new double[6] { J8v.X, J8v.Y, J8v.Z, J8w.X, J8w.Y, J8w.Z };
 
                 double[,] J = new double[6, 9]
@@ -171,7 +179,7 @@ namespace IngameScript
                     1 + 200 * Math.Exp((_joint8.CurrentAngle - _joint8.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint8.MinAngle - _joint8.CurrentAngle) / 0.52d)
                 };
 
-                double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.01f);
+                double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.05f);
 
                 double[] inputSignal = new double[6];
 
@@ -185,25 +193,25 @@ namespace IngameScript
 
                 if (OCtrl)
                 {
-                    if (input.WPress) rot1 = 0.2f * H0_8.Right;
-                    else if (input.SPress) rot1 = -0.2f * H0_8.Right;
+                    if (input.WPress) rot1 = 0.2f * Vector3.Right;
+                    else if (input.SPress) rot1 = -0.2f * Vector3.Right;
 
-                    if (input.APress) rot0 = 0.2f * H0_8.Up;
-                    else if (input.DPress) rot0 = -0.2f * H0_8.Up;
+                    if (input.APress) rot0 = 0.2f * Vector3.Up;
+                    else if (input.DPress) rot0 = -0.2f * Vector3.Up;
 
-                    if (input.SpacePress) rot2 = 0.2f * H0_8.Backward;
-                    else if (input.CPress) rot2 = -0.2f * H0_8.Backward;
+                    if (input.SpacePress) rot2 = 0.2f * Vector3.Backward;
+                    else if (input.CPress) rot2 = -0.2f * Vector3.Backward;
                 }
                 else
                 {
-                    if (input.WPress) trans0 = -1f * H0_8.Backward;
-                    else if (input.SPress) trans0 = 1f * H0_8.Backward;
+                    if (input.WPress) trans0 = -1f * Vector3.Backward;
+                    else if (input.SPress) trans0 = 1f * Vector3.Backward;
 
-                    if (input.APress) trans1 = -1f * H0_8.Right;
-                    else if (input.DPress) trans1 = 1f * H0_8.Right;
+                    if (input.APress) trans1 = -1f * Vector3.Right;
+                    else if (input.DPress) trans1 = 1f * Vector3.Right;
 
-                    if (input.SpacePress) trans2 = 1f * H0_8.Up;
-                    else if (input.CPress) trans2 = -1f * H0_8.Up;
+                    if (input.SpacePress) trans2 = 1f * Vector3.Up;
+                    else if (input.CPress) trans2 = -1f * Vector3.Up;
                 }
 
                 Vector3 transInput = trans0 + trans1 + trans2;
@@ -297,7 +305,7 @@ namespace IngameScript
                 if (oob)
                 {
                     // recompute with updated joint weights
-                    J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.01f);
+                    J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.05f);
                     outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                     N = MyMath.NullSpaceProjector(J, J_pseudoInv);
                     outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
@@ -364,7 +372,7 @@ namespace IngameScript
 
                 double[] achievableVelocities = MyMath.MultiplyMatrixVector(J, totalOutputSignal);
                 double[] errors = MyMath.SubtractVectors(inputSignal, achievableVelocities);
-                double[] tolerances = new double[6] { 0.05, 0.05, 0.05, 0.01, 0.01, 0.01 };
+                double[] tolerances = new double[6] { 0.1, 0.1, 0.1, 0.01, 0.01, 0.01 };
 
                 for (int i = 0; i < 6; i++)
                 {

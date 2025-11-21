@@ -59,8 +59,8 @@ namespace IngameScript
                     PistonBlock.Velocity = value;
                 }
             }
-            public bool IsMaxed => CurrentExtension >= MaxExtension - MathHelper.EPSILON;
-            public bool IsMinned => CurrentExtension <= MinExtension + MathHelper.EPSILON;
+            public bool IsMaxed => CurrentExtension >= MaxExtension - 0.01f;
+            public bool IsMinned => CurrentExtension <= MinExtension + 0.01f;
             public bool IsSaturated
             {
                 get
