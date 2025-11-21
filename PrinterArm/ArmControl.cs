@@ -169,7 +169,7 @@ namespace IngameScript
 
                 double[] jointWeights = new double[9]
                 { 
-                    1000 + 200 * Math.Exp((_joint0.CurrentExtension - _joint0.MaxExtension) / 3d) + 200 * Math.Exp((_joint0.MinExtension - _joint0.CurrentExtension) / 3d),
+                    double.MaxValue,
                     1 + 200 * Math.Exp((_joint1.CurrentAngle - _joint1.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint1.MinAngle - _joint1.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint2.CurrentAngle - _joint2.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint2.MinAngle - _joint2.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint3.CurrentExtension - _joint3.MaxExtension) / 3d) + 200 * Math.Exp((_joint3.MinExtension - _joint3.CurrentExtension) / 3d),
@@ -194,14 +194,14 @@ namespace IngameScript
 
                 if (OCtrl)
                 {
-                    if (input.WPress) rot1 = 0.2f * Vector3.Right;
-                    else if (input.SPress) rot1 = -0.2f * Vector3.Right;
+                    if (input.WPress) rot1 = 0.5f * Vector3.Right;
+                    else if (input.SPress) rot1 = -0.5f * Vector3.Right;
 
-                    if (input.APress) rot0 = 0.2f * Vector3.Up;
-                    else if (input.DPress) rot0 = -0.2f * Vector3.Up;
+                    if (input.APress) rot0 = 0.5f * Vector3.Up;
+                    else if (input.DPress) rot0 = -0.5f * Vector3.Up;
 
-                    if (input.SpacePress) rot2 = 0.2f * Vector3.Backward;
-                    else if (input.CPress) rot2 = -0.2f * Vector3.Backward;
+                    if (input.SpacePress) rot2 = 0.5f * Vector3.Backward;
+                    else if (input.CPress) rot2 = -0.5f * Vector3.Backward;
                 }
                 else
                 {
