@@ -78,6 +78,7 @@ namespace IngameScript
             public bool Control(UserInput input)
             {
                 Matrix H0 = Matrix.Identity;
+                H0.Translation = _baseVector;
                 Matrix H1 = Matrix.CreateRotationY(_joint1.CurrentAngle);
                 H1.Translation = _seg0Vector + -1f * _joint0.CurrentExtension * H0.Backward;
                 Matrix H2 = Matrix.CreateRotationX(_joint2.CurrentAngle);
