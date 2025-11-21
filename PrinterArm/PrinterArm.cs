@@ -36,13 +36,13 @@ namespace IngameScript
             public bool RemoteCtrl { get; private set; } = false;
             public PrinterArm()
             {
-                _armController = GTS.GetBlockWithName("Arm Controller") as IMyShipController;
+                _armController = GTS.GetBlockWithName("HAB_0 Printer Arm Controller") as IMyShipController;
                 if (_armController == null)
-                    throw new Exception("Arm Controller not found");
-                _remoteControl = GTS.GetBlockWithName("Remote Control") as IMyRemoteControl;
+                    throw new Exception("Printer Arm Controller not found on HAB_0");
+                _remoteControl = GTS.GetBlockWithName("HAB_0 Printer Arm RC") as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
-                    throw new Exception("Remote Control not found");
+                    throw new Exception("Printer Arm RC not found on HAB_0");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
                 _display0 = surfaceProvider.GetSurface(0);
@@ -57,7 +57,7 @@ namespace IngameScript
             {
                 _userInput.Run(time);
                 _remoteInput.Run(time);
-                _display0.WriteText(Status());
+                _display1.WriteText(Status());
 
                 if (!ArmCtrl)
                 {
@@ -87,10 +87,10 @@ namespace IngameScript
                 return true;
             }
 
-            public bool ToggleOrientationControl()
+            public bool CycleArmControlMode()
             {
                 if (!ArmCtrl) return false;
-                return _armControl.ToggleOrientationControl();
+                return _armControl.CycleControlMode();
             }
 
             public string Status()
@@ -99,7 +99,7 @@ namespace IngameScript
                 sb.AppendLine("[Printer Arm Status]");
                 sb.AppendLine($"  Arm Control: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  Remote Control: {(RemoteCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  Orientation Control: {(_armControl.OCtrl ? "ON" : "OFF")}");
+                sb.AppendLine($"  Control Mode: {GetName(_armControl.ControlMode)}");
                 sb.AppendLine("  Arm Position:");
                 sb.AppendLine($"    X: {_armControl.EEPosition.X:F2}, Y: {_armControl.EEPosition.Y:F2}, Z: {_armControl.EEPosition.Z:F2}");
                 return sb.ToString();

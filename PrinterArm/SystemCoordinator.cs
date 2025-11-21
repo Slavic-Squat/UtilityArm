@@ -50,7 +50,7 @@ namespace IngameScript
 
                 _commands["TOGGLE_ARM_CTRL"] = (args) => ToggleArmControl();
                 _commands["TOGGLE_REMOTE_CTRL"] = (args) => ToggleRemoteControl();
-                _commands["TOGGLE_O_CTRL"] = (args) => ToggleOrientationControl();
+                _commands["CYCLE_ARM_CTRL_MODE"] = (args) => CycleArmControlMode();
             }
 
             public void Run()
@@ -75,9 +75,9 @@ namespace IngameScript
                 return PrinterArm.ToggleRemoteControl();
             }
 
-            public bool ToggleOrientationControl()
+            public bool CycleArmControlMode()
             {
-                return PrinterArm.ToggleOrientationControl();
+                return PrinterArm.CycleArmControlMode();
             }
         }
     }

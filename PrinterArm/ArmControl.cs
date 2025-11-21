@@ -44,24 +44,24 @@ namespace IngameScript
             private Rotor _joint8;
             private Vector3 _seg8Vector;
 
-            public bool OCtrl { get; private set; }
+            public ArmControlMode ControlMode { get; private set; } = ArmControlMode.Translate;
             public Vector3 EEPosition { get; private set; }
 
             public ArmControl()
             {
-                Piston joint0_0 = new Piston("Joint0_0");
-                Piston joint0_1 = new Piston("Joint0_1");
-                Piston joint0_2 = new Piston("Joint0_2");
-                Piston joint0_3 = new Piston("Joint0_3");
+                Piston joint0_0 = new Piston("HAB_0 Printer Arm Joint0_0");
+                Piston joint0_1 = new Piston("HAB_0 Printer Arm Joint0_1");
+                Piston joint0_2 = new Piston("HAB_0 Printer Arm Joint0_2");
+                Piston joint0_3 = new Piston("HAB_0 Printer Arm Joint0_3");
                 _joint0 = new PistonSeries(joint0_0, joint0_1, joint0_2, joint0_3);
-                _joint1 = new Rotor("Joint1");
-                _joint2 = new Rotor("Joint2");
-                _joint3 = new Piston("Joint3");
-                _joint4 = new Rotor("Joint4");
-                _joint5 = new Piston("Joint5");
-                _joint6 = new Rotor("Joint6");
-                _joint7 = new Rotor("Joint7");
-                _joint8 = new Rotor("Joint8");
+                _joint1 = new Rotor("HAB_0 Printer Arm Joint1");
+                _joint2 = new Rotor("HAB_0 Printer Arm Joint2");
+                _joint3 = new Piston("HAB_0 Printer Arm Joint3");
+                _joint4 = new Rotor("HAB_0 Printer Arm Joint4");
+                _joint5 = new Piston("HAB_0 Printer Arm Joint5");
+                _joint6 = new Rotor("HAB_0 Printer Arm Joint6");
+                _joint7 = new Rotor("HAB_0 Printer Arm Joint7");
+                _joint8 = new Rotor("HAB_0 Printer Arm Joint8");
 
                 _baseVector = new Vector3(0, 0, -18.2f);
                 _seg0Vector = new Vector3(0, -4.15f, -1.25f);
@@ -171,8 +171,8 @@ namespace IngameScript
                 { 
                     double.MaxValue,
                     1 + 200 * Math.Exp((_joint1.CurrentAngle - _joint1.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint1.MinAngle - _joint1.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint2.CurrentAngle - _joint2.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint2.MinAngle - _joint2.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint3.CurrentExtension - _joint3.MaxExtension) / 3d) + 200 * Math.Exp((_joint3.MinExtension - _joint3.CurrentExtension) / 3d),
+                    double.MaxValue,
+                    double.MaxValue,
                     1 + 200 * Math.Exp((_joint4.CurrentAngle - _joint4.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint4.MinAngle - _joint4.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint5.CurrentExtension - _joint5.MaxExtension) / 3d) + 200 * Math.Exp((_joint5.MinExtension - _joint5.CurrentExtension) / 3d),
                     1 + 200 * Math.Exp((_joint6.CurrentAngle - _joint6.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint6.MinAngle - _joint6.CurrentAngle) / 0.52d),
@@ -183,6 +183,7 @@ namespace IngameScript
                 double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.05f);
 
                 double[] inputSignal = new double[6];
+                double[] inputSignalNull = new double[9];
 
                 Vector3 trans0 = Vector3.Zero;
                 Vector3 trans1 = Vector3.Zero;
@@ -192,27 +193,44 @@ namespace IngameScript
                 Vector3 rot1 = Vector3.Zero;
                 Vector3 rot2 = Vector3.Zero;
 
-                if (OCtrl)
+                switch (ControlMode)
                 {
-                    if (input.WPress) rot1 = 0.5f * Vector3.Right;
-                    else if (input.SPress) rot1 = -0.5f * Vector3.Right;
+                    case ArmControlMode.Translate:
+                        {
+                            if (input.WPress) trans0 = -1f * Vector3.Backward;
+                            else if (input.SPress) trans0 = 1f * Vector3.Backward;
 
-                    if (input.APress) rot0 = 0.5f * Vector3.Up;
-                    else if (input.DPress) rot0 = -0.5f * Vector3.Up;
+                            if (input.APress) trans1 = -1f * Vector3.Right;
+                            else if (input.DPress) trans1 = 1f * Vector3.Right;
 
-                    if (input.SpacePress) rot2 = 0.5f * Vector3.Backward;
-                    else if (input.CPress) rot2 = -0.5f * Vector3.Backward;
-                }
-                else
-                {
-                    if (input.WPress) trans0 = -1f * Vector3.Backward;
-                    else if (input.SPress) trans0 = 1f * Vector3.Backward;
+                            if (input.SpacePress) trans2 = 1f * Vector3.Up;
+                            else if (input.CPress) trans2 = -1f * Vector3.Up;
+                            break;
+                        }
+                    case ArmControlMode.Rotate:
+                        {
+                            if (input.SpacePress) rot1 = 0.5f * Vector3.Right;
+                            else if (input.CPress) rot1 = -0.5f * Vector3.Right;
 
-                    if (input.APress) trans1 = -1f * Vector3.Right;
-                    else if (input.DPress) trans1 = 1f * Vector3.Right;
+                            if (input.APress) rot0 = 0.5f * Vector3.Up;
+                            else if (input.DPress) rot0 = -0.5f * Vector3.Up;
 
-                    if (input.SpacePress) trans2 = 1f * Vector3.Up;
-                    else if (input.CPress) trans2 = -1f * Vector3.Up;
+                            if (input.QPress) rot2 = 0.5f * Vector3.Backward;
+                            else if (input.EPress) rot2 = -0.5f * Vector3.Backward;
+                            break;
+                        }
+                    case ArmControlMode.Pose:
+                        {
+                            if (input.WPress) inputSignalNull[0] = 0.5f;
+                            else if (input.SPress) inputSignalNull[0] = -0.5f;
+
+                            if (input.SpacePress) inputSignalNull[2] = 0.1f;
+                            else if (input.CPress) inputSignalNull[2] = -0.1f;
+
+                            if (input.EPress) inputSignalNull[3] = 0.5f;
+                            else if (input.QPress) inputSignalNull[3] = -0.5f;
+                            break;
+                        }
                 }
 
                 Vector3 transInput = trans0 + trans1 + trans2;
@@ -224,17 +242,6 @@ namespace IngameScript
                 inputSignal[3] = rotInput.X;
                 inputSignal[4] = rotInput.Y;
                 inputSignal[5] = rotInput.Z;
-
-                double[] inputSignalNull = new double[9];
-
-                if (input.QPress)
-                {
-                    inputSignalNull[0] = 0.5f;
-                }
-                else if (input.EPress)
-                {
-                    inputSignalNull[0] = -0.5f;
-                }
 
                 double[] outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                 double[,] N = MyMath.NullSpaceProjector(J, J_pseudoInv);
@@ -373,7 +380,7 @@ namespace IngameScript
 
                 double[] achievableVelocities = MyMath.MultiplyMatrixVector(J, totalOutputSignal);
                 double[] errors = MyMath.SubtractVectors(inputSignal, achievableVelocities);
-                double[] tolerances = new double[6] { 0.1, 0.1, 0.1, 0.01, 0.01, 0.01 };
+                double[] tolerances = new double[6] { 0.2, 0.2, 0.2, 0.05, 0.05, 0.05 };
 
                 for (int i = 0; i < 6; i++)
                 {
@@ -402,9 +409,9 @@ namespace IngameScript
                 return true;
             }
 
-            public bool ToggleOrientationControl()
+            public bool CycleControlMode()
             {
-                OCtrl = !OCtrl;
+                ControlMode = NextArmControlMode(ControlMode);
                 return true;
             }
         }
