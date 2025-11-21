@@ -114,12 +114,12 @@ namespace IngameScript
                 Vector3 J0w = Vector3.Zero;
                 double[] J0 = new double[6] { J0v.X, J0v.Y, J0v.Z, J0w.X, J0w.Y, J0w.Z };
 
-                Vector3 J1v = Vector3.Cross(H1.Up, currentCoord - H1.Translation);
-                Vector3 J1w = H0.Up;
+                Vector3 J1v = Vector3.Cross(H0_1.Up, currentCoord - H0_1.Translation);
+                Vector3 J1w = H0_1.Up;
                 double[] J1 = new double[6] { J1v.X, J1v.Y, J1v.Z, J1w.X, J1w.Y, J1w.Z };
 
                 Vector3 J2v = Vector3.Cross(H0_2.Right, currentCoord - H0_2.Translation);
-                Vector3 J2w = H0_1.Right;
+                Vector3 J2w = H0_2.Right;
                 double[] J2 = new double[6] { J2v.X, J2v.Y, J2v.Z, J2w.X, J2w.Y, J2w.Z };
 
                 Vector3 J3v = -1f * H0_3.Backward;
@@ -160,12 +160,12 @@ namespace IngameScript
 
                 double[] jointWeights = new double[9]
                 { 
-                    1 + 200 * Math.Exp((_joint0.CurrentExtension - _joint0.MaxExtension) / 3d) + 200 * Math.Exp((_joint0.MinExtension - _joint0.CurrentExtension) / 3d),
+                    1000 + 200 * Math.Exp((_joint0.CurrentExtension - _joint0.MaxExtension) / 3d) + 200 * Math.Exp((_joint0.MinExtension - _joint0.CurrentExtension) / 3d),
                     1 + 200 * Math.Exp((_joint1.CurrentAngle - _joint1.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint1.MinAngle - _joint1.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint2.CurrentAngle - _joint2.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint2.MinAngle - _joint2.CurrentAngle) / 0.52d),
-                    100 + 200 * Math.Exp((_joint3.CurrentExtension - _joint3.MaxExtension) / 3d) + 200 * Math.Exp((_joint3.MinExtension - _joint3.CurrentExtension) / 3d),
+                    1 + 200 * Math.Exp((_joint3.CurrentExtension - _joint3.MaxExtension) / 3d) + 200 * Math.Exp((_joint3.MinExtension - _joint3.CurrentExtension) / 3d),
                     1 + 200 * Math.Exp((_joint4.CurrentAngle - _joint4.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint4.MinAngle - _joint4.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint5.CurrentExtension - _joint5.MaxExtension) / 6d) + 200 * Math.Exp((_joint5.MinExtension - _joint5.CurrentExtension) / 6d),
+                    1 + 200 * Math.Exp((_joint5.CurrentExtension - _joint5.MaxExtension) / 3d) + 200 * Math.Exp((_joint5.MinExtension - _joint5.CurrentExtension) / 3d),
                     1 + 200 * Math.Exp((_joint6.CurrentAngle - _joint6.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint6.MinAngle - _joint6.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint7.CurrentAngle - _joint7.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint7.MinAngle - _joint7.CurrentAngle) / 0.52d),
                     1 + 200 * Math.Exp((_joint8.CurrentAngle - _joint8.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint8.MinAngle - _joint8.CurrentAngle) / 0.52d)
@@ -220,11 +220,11 @@ namespace IngameScript
 
                 if (input.QPress)
                 {
-                    inputSignalNull[2] = 0.1f;
+                    inputSignalNull[0] = 0.5f;
                 }
                 else if (input.EPress)
                 {
-                    inputSignalNull[2] = -0.1f;
+                    inputSignalNull[0] = -0.5f;
                 }
 
                 double[] outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
@@ -364,17 +364,13 @@ namespace IngameScript
 
                 double[] achievableVelocities = MyMath.MultiplyMatrixVector(J, totalOutputSignal);
                 double[] errors = MyMath.SubtractVectors(inputSignal, achievableVelocities);
+                double[] tolerances = new double[6] { 0.05, 0.05, 0.05, 0.01, 0.01, 0.01 };
 
                 for (int i = 0; i < 6; i++)
                 {
-                    double tolerance = 0.1;
-                    if (i > 2)
-                    {
-                        tolerance = 0.01;
-                    }
                     double absError = Math.Abs(errors[i]);
 
-                    if (absError > tolerance)
+                    if (absError > tolerances[i])
                     {
                         oob = true;
                         break;
