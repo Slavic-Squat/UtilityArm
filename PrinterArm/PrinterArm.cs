@@ -96,11 +96,11 @@ namespace IngameScript
             public string Status()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("[Printer Arm Status]");
-                sb.AppendLine($"  Arm Control: {(ArmCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  Remote Control: {(RemoteCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  Control Mode: {GetName(_armControl.ControlMode)}");
-                sb.AppendLine("  Arm Position:");
+                sb.AppendLine("[PRINTER ARM STATUS]");
+                sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
+                sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
+                sb.AppendLine($"  CTRL MODE: {GetName(_armControl.ControlMode)}");
+                sb.AppendLine("  ARM POS:");
                 sb.AppendLine($"    X: {_armControl.EEPosition.X:F2}, Y: {_armControl.EEPosition.Y:F2}, Z: {_armControl.EEPosition.Z:F2}");
                 return sb.ToString();
             }
