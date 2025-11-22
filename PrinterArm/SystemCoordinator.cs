@@ -56,7 +56,8 @@ namespace IngameScript
             public void Run()
             {
                 SystemTime += RuntimeInfo.TimeSinceLastRun.TotalSeconds;
-                DebugEcho(SystemTime.ToString("F2"));
+                DebugEcho($"SystemTime {SystemTime:F2} s");
+                DebugEcho($"LastRunTime {RuntimeInfo.LastRunTimeMs} ms");
                 PrinterArm.Run(SystemTime);
             }
 
