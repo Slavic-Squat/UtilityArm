@@ -165,22 +165,8 @@ namespace IngameScript
                     { J0[5], J1[5], J2[5], J3[5], J4[5], J5[5], J6[5], J7[5], J8[5] }
                 };
 
-                double[] taskWeights = new double[6] { 1, 1, 1, 100, 100, 100 };
-
-                double[] jointWeights = new double[9]
-                { 
-                    double.MaxValue,
-                    1 + 200 * Math.Exp((_joint1.CurrentAngle - _joint1.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint1.MinAngle - _joint1.CurrentAngle) / 0.52d),
-                    double.MaxValue,
-                    double.MaxValue,
-                    1 + 200 * Math.Exp((_joint4.CurrentAngle - _joint4.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint4.MinAngle - _joint4.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint5.CurrentExtension - _joint5.MaxExtension) / 3d) + 200 * Math.Exp((_joint5.MinExtension - _joint5.CurrentExtension) / 3d),
-                    1 + 200 * Math.Exp((_joint6.CurrentAngle - _joint6.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint6.MinAngle - _joint6.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint7.CurrentAngle - _joint7.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint7.MinAngle - _joint7.CurrentAngle) / 0.52d),
-                    1 + 200 * Math.Exp((_joint8.CurrentAngle - _joint8.MaxAngle) / 0.52d) + 200 * Math.Exp((_joint8.MinAngle - _joint8.CurrentAngle) / 0.52d)
-                };
-
-                double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.05f);
+                double[] taskWeights = new double[6] { 1, 1, 1, 10, 10, 10 };
+                double[] jointWeights = new double[9] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
                 double[] inputSignal = new double[6];
                 double[] inputSignalNull = new double[9];
@@ -209,26 +195,39 @@ namespace IngameScript
                         }
                     case ArmControlMode.Rotate:
                         {
-                            if (input.SpacePress) rot1 = 0.5f * Vector3.Right;
-                            else if (input.CPress) rot1 = -0.5f * Vector3.Right;
+                            if (input.SpacePress) rot1 = 0.2f * Vector3.Right;
+                            else if (input.CPress) rot1 = -0.2f * Vector3.Right;
 
-                            if (input.APress) rot0 = 0.5f * Vector3.Up;
-                            else if (input.DPress) rot0 = -0.5f * Vector3.Up;
+                            if (input.APress) rot0 = 0.2f * Vector3.Up;
+                            else if (input.DPress) rot0 = -0.2f * Vector3.Up;
 
-                            if (input.QPress) rot2 = 0.5f * Vector3.Backward;
-                            else if (input.EPress) rot2 = -0.5f * Vector3.Backward;
+                            if (input.QPress) rot2 = 0.2f * Vector3.Backward;
+                            else if (input.EPress) rot2 = -0.2f * Vector3.Backward;
                             break;
                         }
                     case ArmControlMode.Pose:
                         {
-                            if (input.WPress) inputSignalNull[0] = 0.5f;
-                            else if (input.SPress) inputSignalNull[0] = -0.5f;
+                            if (input.WPress)
+                            {
+                                inputSignalNull[0] = 1.0f;
+                                jointWeights[0] = double.MaxValue;
+                            }
+                            else if (input.SPress)
+                            {
+                                inputSignalNull[0] = -1.0f;
+                                jointWeights[0] = double.MaxValue;
+                            }
 
-                            if (input.SpacePress) inputSignalNull[2] = 0.1f;
-                            else if (input.CPress) inputSignalNull[2] = -0.1f;
-
-                            if (input.EPress) inputSignalNull[3] = 0.5f;
-                            else if (input.QPress) inputSignalNull[3] = -0.5f;
+                            if (input.QPress)
+                            {
+                                inputSignalNull[4] = 0.2f;
+                                jointWeights[4] = double.MaxValue;
+                            }
+                            else if (input.EPress)
+                            {
+                                inputSignalNull[4] = -0.2f;
+                                jointWeights[4] = double.MaxValue;
+                            }
                             break;
                         }
                 }
@@ -243,6 +242,7 @@ namespace IngameScript
                 inputSignal[4] = rotInput.Y;
                 inputSignal[5] = rotInput.Z;
 
+                double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.1f);
                 double[] outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                 double[,] N = MyMath.NullSpaceProjector(J, J_pseudoInv);
                 double[] outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
@@ -313,7 +313,7 @@ namespace IngameScript
                 if (oob)
                 {
                     // recompute with updated joint weights
-                    J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.05f);
+                    J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.1f);
                     outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                     N = MyMath.NullSpaceProjector(J, J_pseudoInv);
                     outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
@@ -380,7 +380,7 @@ namespace IngameScript
 
                 double[] achievableVelocities = MyMath.MultiplyMatrixVector(J, totalOutputSignal);
                 double[] errors = MyMath.SubtractVectors(inputSignal, achievableVelocities);
-                double[] tolerances = new double[6] { 0.2, 0.2, 0.2, 0.05, 0.05, 0.05 };
+                double[] tolerances = new double[6] { 1, 1, 1, 0.1, 0.1, 0.1 };
 
                 for (int i = 0; i < 6; i++)
                 {
