@@ -218,6 +218,17 @@ namespace IngameScript
                                 jointWeights[0] = double.MaxValue;
                             }
 
+                            if (input.APress)
+                            {
+                                inputSignalNull[1] = 0.2f;
+                                jointWeights[1] = double.MaxValue;
+                            }
+                            else if (input.DPress)
+                            {
+                                inputSignalNull[1] = -0.2f;
+                                jointWeights[1] = double.MaxValue;
+                            }
+
                             if (input.QPress)
                             {
                                 inputSignalNull[4] = 0.2f;
