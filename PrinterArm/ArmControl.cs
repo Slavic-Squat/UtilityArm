@@ -49,19 +49,20 @@ namespace IngameScript
 
             public ArmControl()
             {
-                Piston joint0_0 = new Piston("HAB_0 Printer Arm Joint0_0");
-                Piston joint0_1 = new Piston("HAB_0 Printer Arm Joint0_1");
-                Piston joint0_2 = new Piston("HAB_0 Printer Arm Joint0_2");
-                Piston joint0_3 = new Piston("HAB_0 Printer Arm Joint0_3");
+                string prefix = SystemCoordinator.GridName;
+                Piston joint0_0 = new Piston($"{prefix} Printer Arm Joint0_0");
+                Piston joint0_1 = new Piston($"{prefix} Printer Arm Joint0_1");
+                Piston joint0_2 = new Piston($"{prefix} Printer Arm Joint0_2");
+                Piston joint0_3 = new Piston($"{prefix} Printer Arm Joint0_3");
                 _joint0 = new PistonSeries(joint0_0, joint0_1, joint0_2, joint0_3);
-                _joint1 = new Rotor("HAB_0 Printer Arm Joint1");
-                _joint2 = new Rotor("HAB_0 Printer Arm Joint2");
-                _joint3 = new Piston("HAB_0 Printer Arm Joint3");
-                _joint4 = new Rotor("HAB_0 Printer Arm Joint4");
-                _joint5 = new Piston("HAB_0 Printer Arm Joint5");
-                _joint6 = new Rotor("HAB_0 Printer Arm Joint6");
-                _joint7 = new Rotor("HAB_0 Printer Arm Joint7");
-                _joint8 = new Rotor("HAB_0 Printer Arm Joint8");
+                _joint1 = new Rotor($"{prefix} Printer Arm Joint1");
+                _joint2 = new Rotor($"{prefix} Printer Arm Joint2");
+                _joint3 = new Piston($"{prefix} Printer Arm Joint3");
+                _joint4 = new Rotor($"{prefix} Printer Arm Joint4");
+                _joint5 = new Piston($"{prefix} Printer Arm Joint5");
+                _joint6 = new Rotor($"{prefix} Printer Arm Joint6");
+                _joint7 = new Rotor($"{prefix} Printer Arm Joint7");
+                _joint8 = new Rotor($"{prefix} Printer Arm Joint8");
 
                 _baseVector = new Vector3(0, 0, -18.2f);
                 _seg0Vector = new Vector3(0, -4.15f, -1.25f);
@@ -229,15 +230,30 @@ namespace IngameScript
                                 jointWeights[1] = double.MaxValue;
                             }
 
-                            if (input.QPress)
+                            if (input.SpacePress)
                             {
                                 inputSignalNull[4] = 0.2f;
                                 jointWeights[4] = double.MaxValue;
                             }
-                            else if (input.EPress)
+                            else if (input.CPress)
                             {
                                 inputSignalNull[4] = -0.2f;
                                 jointWeights[4] = double.MaxValue;
+                            }
+
+                            if (input.QPress)
+                            {
+                                inputSignalNull[3] = -1f;
+                                inputSignalNull[5] = -1f;
+                                jointWeights[3] = double.MaxValue;
+                                jointWeights[5] = double.MaxValue;
+                            }
+                            else if (input.EPress)
+                            {
+                                inputSignalNull[3] = 1f;
+                                inputSignalNull[5] = 1f;
+                                jointWeights[3] = double.MaxValue;
+                                jointWeights[5] = double.MaxValue;
                             }
                             break;
                         }

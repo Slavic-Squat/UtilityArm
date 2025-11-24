@@ -36,13 +36,14 @@ namespace IngameScript
             public bool RemoteCtrl { get; private set; } = false;
             public PrinterArm()
             {
-                _armController = GTS.GetBlockWithName("HAB_0 Printer Arm Controller") as IMyShipController;
+                string prefix = SystemCoordinator.GridName;
+                _armController = GTS.GetBlockWithName($"{prefix} Printer Arm Controller") as IMyShipController;
                 if (_armController == null)
-                    throw new Exception("Printer Arm Controller not found on HAB_0");
-                _remoteControl = GTS.GetBlockWithName("HAB_0 Printer Arm RC") as IMyRemoteControl;
+                    throw new Exception($"Printer Arm Controller not found on {prefix}");
+                _remoteControl = GTS.GetBlockWithName($"{prefix} Printer Arm RC") as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
-                    throw new Exception("Printer Arm RC not found on HAB_0");
+                    throw new Exception($"Printer Arm RC not found on {prefix}");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
                 _display0 = surfaceProvider.GetSurface(0);
