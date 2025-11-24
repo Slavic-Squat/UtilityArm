@@ -25,7 +25,7 @@ namespace IngameScript
         public class SystemCoordinator
         {
             public static double SystemTime { get; private set; }
-            public static string GridName = MePB.CubeGrid.CustomName;
+            public static string GridName => MePB.CubeGrid.CustomName;
             public MyIni Config { get; private set; }
             public CommandHandler CommandHandler { get; private set; }
             public PrinterArm PrinterArm { get; private set; }
