@@ -82,15 +82,22 @@ namespace IngameScript
             public IMyPistonBase PistonBlock { get; private set; }
             public Piston(string blockName)
             {
-                PistonBlock = GTS.GetBlockWithName(blockName) as IMyPistonBase;
+                PistonBlock = AllGridBlocks.Find(b => b is IMyPistonBase && b.CustomName.Contains(blockName)) as IMyPistonBase;
                 if (PistonBlock == null)
-                    throw new ArgumentException($"Piston block '{blockName}' not found");
+                {
+                    DebugWrite($"Piston block '{blockName}' not found!\n", true);
+                    throw new ArgumentException($"Piston block '{blockName}' not found!\n");
+                }                    
             }
 
             public Piston(IMyPistonBase pistonBlock)
             {
                 if (pistonBlock == null)
-                    throw new ArgumentException($"Piston block is null");
+                {
+                    DebugWrite($"Piston block is null!\n", true);
+                    throw new ArgumentException($"Piston block is null!\n");
+                }
+                    
                 PistonBlock = pistonBlock;
             }
         }

@@ -25,12 +25,9 @@ namespace IngameScript
         public class SystemCoordinator
         {
             public static double SystemTime { get; private set; }
-            public static string GridName => MePB.CubeGrid.CustomName;
             public MyIni Config { get; private set; }
             public CommandHandler CommandHandler { get; private set; }
             public PrinterArm PrinterArm { get; private set; }
-
-            private Dictionary<string, Action<string[]>> _commands = new Dictionary<string, Action<string[]>>();
 
             public SystemCoordinator()
             {
@@ -45,40 +42,42 @@ namespace IngameScript
 
             private void Init()
             {
-                CommandHandler = new CommandHandler(MePB, _commands);
+                CommandHandler = new CommandHandler();
                 PrinterArm = new PrinterArm();
 
-                _commands["TOGGLE_ARM_CTRL"] = (args) => ToggleArmControl();
-                _commands["TOGGLE_REMOTE_CTRL"] = (args) => ToggleRemoteControl();
-                _commands["CYCLE_ARM_CTRL_MODE"] = (args) => CycleArmControlMode();
+                CommandHandler.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
+                CommandHandler.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
+                CommandHandler.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
             }
 
             public void Run()
             {
                 SystemTime += RuntimeInfo.TimeSinceLastRun.TotalSeconds;
-                DebugEcho($"SystemTime {SystemTime:F2} s");
-                DebugEcho($"LastRunTime {RuntimeInfo.LastRunTimeMs} ms");
+                DebugEcho($"System Time: {SystemTime:F2}s\n");
+                DebugWrite($"System Time: {SystemTime:F2}s\n", false);
+                DebugEcho($"Last Run Time: {RuntimeInfo.LastRunTimeMs}ms\n");
+                DebugWrite($"Last Run Time: {RuntimeInfo.LastRunTimeMs}ms\n", true);
                 PrinterArm.Run(SystemTime);
             }
 
-            public bool Command(string command)
+            public void Command(string command)
             {
-                return CommandHandler.RunCommands(command);
+                CommandHandler.RunCommands(command);
             }
 
-            public bool ToggleArmControl()
+            public void ToggleArmControl()
             {
-                return PrinterArm.ToggleArmControl();
+                PrinterArm.ToggleArmControl();
             }
 
-            public bool ToggleRemoteControl()
+            public void ToggleRemoteControl()
             {
-                return PrinterArm.ToggleRemoteControl();
+                PrinterArm.ToggleRemoteControl();
             }
 
-            public bool CycleArmControlMode()
+            public void CycleArmControlMode()
             {
-                return PrinterArm.CycleArmControlMode();
+                PrinterArm.CycleArmControlMode();
             }
         }
     }

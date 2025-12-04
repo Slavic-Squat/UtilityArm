@@ -49,20 +49,19 @@ namespace IngameScript
 
             public ArmControl()
             {
-                string prefix = SystemCoordinator.GridName;
-                Piston joint0_0 = new Piston($"{prefix} Printer Arm Joint0_0");
-                Piston joint0_1 = new Piston($"{prefix} Printer Arm Joint0_1");
-                Piston joint0_2 = new Piston($"{prefix} Printer Arm Joint0_2");
-                Piston joint0_3 = new Piston($"{prefix} Printer Arm Joint0_3");
+                Piston joint0_0 = new Piston("Printer Arm Joint 0_0");
+                Piston joint0_1 = new Piston("Printer Arm Joint 0_1");
+                Piston joint0_2 = new Piston("Printer Arm Joint 0_2");
+                Piston joint0_3 = new Piston("Printer Arm Joint 0_3");
                 _joint0 = new PistonSeries(joint0_0, joint0_1, joint0_2, joint0_3);
-                _joint1 = new Rotor($"{prefix} Printer Arm Joint1");
-                _joint2 = new Rotor($"{prefix} Printer Arm Joint2");
-                _joint3 = new Piston($"{prefix} Printer Arm Joint3");
-                _joint4 = new Rotor($"{prefix} Printer Arm Joint4");
-                _joint5 = new Piston($"{prefix} Printer Arm Joint5");
-                _joint6 = new Rotor($"{prefix} Printer Arm Joint6");
-                _joint7 = new Rotor($"{prefix} Printer Arm Joint7");
-                _joint8 = new Rotor($"{prefix} Printer Arm Joint8");
+                _joint1 = new Rotor("Printer Arm Joint 1");
+                _joint2 = new Rotor("Printer Arm Joint 2");
+                _joint3 = new Piston("Printer Arm Joint 3");
+                _joint4 = new Rotor("Printer Arm Joint 4");
+                _joint5 = new Piston("Printer Arm Joint 5");
+                _joint6 = new Rotor("Printer Arm Joint 6");
+                _joint7 = new Rotor("Printer Arm Joint 7");
+                _joint8 = new Rotor("Printer Arm Joint 8");
 
                 _baseVector = new Vector3(0, 0, -18.2f);
                 _seg0Vector = new Vector3(0, -4.15f, -1.25f);
@@ -76,7 +75,7 @@ namespace IngameScript
                 _seg8Vector = new Vector3(0, 0, -3.5f);
             }
 
-            public bool Control(UserInput input)
+            public void Control(UserInput userInput)
             {
                 Matrix H0 = Matrix.Identity;
                 H0.Translation = _baseVector;
@@ -184,71 +183,71 @@ namespace IngameScript
                 {
                     case ArmControlMode.Translate:
                         {
-                            if (input.WPress) trans0 = -1f * Vector3.Backward;
-                            else if (input.SPress) trans0 = 1f * Vector3.Backward;
+                            if (userInput.WPress) trans0 = -1f * Vector3.Backward;
+                            else if (userInput.SPress) trans0 = 1f * Vector3.Backward;
 
-                            if (input.APress) trans1 = -1f * Vector3.Right;
-                            else if (input.DPress) trans1 = 1f * Vector3.Right;
+                            if (userInput.APress) trans1 = -1f * Vector3.Right;
+                            else if (userInput.DPress) trans1 = 1f * Vector3.Right;
 
-                            if (input.SpacePress) trans2 = 1f * Vector3.Up;
-                            else if (input.CPress) trans2 = -1f * Vector3.Up;
+                            if (userInput.SpacePress) trans2 = 1f * Vector3.Up;
+                            else if (userInput.CPress) trans2 = -1f * Vector3.Up;
                             break;
                         }
                     case ArmControlMode.Rotate:
                         {
-                            if (input.SpacePress) rot1 = 0.2f * Vector3.Right;
-                            else if (input.CPress) rot1 = -0.2f * Vector3.Right;
+                            if (userInput.SpacePress) rot1 = 0.2f * Vector3.Right;
+                            else if (userInput.CPress) rot1 = -0.2f * Vector3.Right;
 
-                            if (input.APress) rot0 = 0.2f * Vector3.Up;
-                            else if (input.DPress) rot0 = -0.2f * Vector3.Up;
+                            if (userInput.APress) rot0 = 0.2f * Vector3.Up;
+                            else if (userInput.DPress) rot0 = -0.2f * Vector3.Up;
 
-                            if (input.QPress) rot2 = 0.2f * Vector3.Backward;
-                            else if (input.EPress) rot2 = -0.2f * Vector3.Backward;
+                            if (userInput.QPress) rot2 = 0.2f * Vector3.Backward;
+                            else if (userInput.EPress) rot2 = -0.2f * Vector3.Backward;
                             break;
                         }
                     case ArmControlMode.Pose:
                         {
-                            if (input.WPress)
+                            if (userInput.WPress)
                             {
                                 inputSignalNull[0] = 1.0f;
                                 jointWeights[0] = double.MaxValue;
                             }
-                            else if (input.SPress)
+                            else if (userInput.SPress)
                             {
                                 inputSignalNull[0] = -1.0f;
                                 jointWeights[0] = double.MaxValue;
                             }
 
-                            if (input.APress)
+                            if (userInput.APress)
                             {
                                 inputSignalNull[1] = 0.2f;
                                 jointWeights[1] = double.MaxValue;
                             }
-                            else if (input.DPress)
+                            else if (userInput.DPress)
                             {
                                 inputSignalNull[1] = -0.2f;
                                 jointWeights[1] = double.MaxValue;
                             }
 
-                            if (input.SpacePress)
+                            if (userInput.SpacePress)
                             {
                                 inputSignalNull[4] = 0.2f;
                                 jointWeights[4] = double.MaxValue;
                             }
-                            else if (input.CPress)
+                            else if (userInput.CPress)
                             {
                                 inputSignalNull[4] = -0.2f;
                                 jointWeights[4] = double.MaxValue;
                             }
 
-                            if (input.QPress)
+                            if (userInput.QPress)
                             {
                                 inputSignalNull[3] = -1f;
                                 inputSignalNull[5] = -1f;
                                 jointWeights[3] = double.MaxValue;
                                 jointWeights[5] = double.MaxValue;
                             }
-                            else if (input.EPress)
+                            else if (userInput.EPress)
                             {
                                 inputSignalNull[3] = 1f;
                                 inputSignalNull[5] = 1f;
@@ -432,14 +431,11 @@ namespace IngameScript
                     _joint7.Velocity = 0f;
                     _joint8.Velocity = 0f;
                 }
-
-                return true;
             }
 
-            public bool CycleControlMode()
+            public void CycleControlMode()
             {
                 ControlMode = NextArmControlMode(ControlMode);
-                return true;
             }
         }
     }

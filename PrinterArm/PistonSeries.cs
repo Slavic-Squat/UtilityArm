@@ -89,15 +89,6 @@ namespace IngameScript
 
             private float _targetVelocity;
 
-            public PistonSeries(string groupName)
-            {
-                GTS.GetBlockGroupWithName(groupName).GetBlocksOfType(_pistons);
-                if (_pistons.Count == 0)
-                {
-                    throw new Exception($"Piston Series {groupName} Not Found");
-                }
-            }
-
             public PistonSeries(params Piston[] pistons)
             {
                 _pistons = pistons.ToList();

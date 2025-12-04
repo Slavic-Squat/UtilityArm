@@ -26,8 +26,7 @@ namespace IngameScript
         {
             private IMyShipController _armController;
             private IMyRemoteControl _remoteControl;
-            private IMyTextSurface _display0;
-            private IMyTextSurface _display1;
+            private IMyTextSurface _display;
             private UserInput _userInput;
             private UserInput _remoteInput;
             private ArmControl _armControl;
@@ -36,62 +35,62 @@ namespace IngameScript
             public bool RemoteCtrl { get; private set; } = false;
             public PrinterArm()
             {
-                string prefix = SystemCoordinator.GridName;
-                _armController = GTS.GetBlockWithName($"{prefix} Printer Arm Controller") as IMyShipController;
+                _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.Contains("Printer Arm Controller")) as IMyShipController;
                 if (_armController == null)
-                    throw new Exception($"Printer Arm Controller not found on {prefix}");
-                _remoteControl = GTS.GetBlockWithName($"{prefix} Printer Arm RC") as IMyRemoteControl;
+                {
+                    DebugWrite("Controller for printer arm not found!\n", true);
+                    throw new Exception("Controller for printer arm not found!\n");
+                }
+                _remoteControl = AllGridBlocks.Find(b => b is IMyRemoteControl && b.CustomName.Contains("Printer Arm RC")) as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
-                    throw new Exception($"Printer Arm RC not found on {prefix}");
+                    DebugWrite("RC for printer arm not found!\n", true);
+                    throw new Exception("RC for printer arm not found!\n");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
-                _display0 = surfaceProvider.GetSurface(0);
-                _display1 = surfaceProvider.GetSurface(1);
+                _display = surfaceProvider.GetSurface(1);
 
                 _userInput = new UserInput(_armController);
                 _remoteInput = new UserInput(_remoteControl);
                 _armControl = new ArmControl();
             }
 
-            public bool Run(double time)
+            public void Run(double time)
             {
                 _userInput.Run(time);
                 _remoteInput.Run(time);
-                _display1.WriteText(Status());
+                _display.WriteText(Status());
 
                 if (!ArmCtrl)
                 {
-                    return false;
+                    return;
                 }
 
                 if (!RemoteCtrl)
                 {
-                    return _armControl.Control(_userInput);
+                    _armControl.Control(_userInput);
                 }
                 else
                 {
-                    return _armControl.Control(_remoteInput);
+                    _armControl.Control(_remoteInput);
                 }                
             }
 
-            public bool ToggleArmControl()
+            public void ToggleArmControl()
             {
                 ArmCtrl = !ArmCtrl;
-                return true;
             }
 
-            public bool ToggleRemoteControl()
+            public void ToggleRemoteControl()
             {
-                if (!ArmCtrl) return false;
+                if (!ArmCtrl) return;
                 RemoteCtrl = !RemoteCtrl;
-                return true;
             }
 
-            public bool CycleArmControlMode()
+            public void CycleArmControlMode()
             {
-                if (!ArmCtrl) return false;
-                return _armControl.CycleControlMode();
+                if (!ArmCtrl) return;
+                _armControl.CycleControlMode();
             }
 
             public string Status()

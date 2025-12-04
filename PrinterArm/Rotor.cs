@@ -116,9 +116,12 @@ namespace IngameScript
             public IMyMotorStator RotorBlock { get; private set; }
             public Rotor(string blockName)
             {
-                RotorBlock = GTS.GetBlockWithName(blockName) as IMyMotorStator;
+                RotorBlock = AllGridBlocks.Find(b => b is IMyMotorStator && b.CustomName.Contains(blockName)) as IMyMotorStator;
                 if (RotorBlock == null)
-                    throw new ArgumentException($"Rotor block '{blockName}' not found");
+                {
+                    DebugWrite($"Error: Rotor block '{blockName}' not found!\n", true);
+                    throw new ArgumentException($"Rotor block '{blockName}' not found!\n");
+                }                    
 
                 IsInverted = RotorBlock.CustomData.Contains("-Inverted");
             }
@@ -126,7 +129,11 @@ namespace IngameScript
             public Rotor(IMyMotorStator rotorBlock)
             {
                 if (rotorBlock == null)
-                    throw new ArgumentNullException("rotorBlock");
+                {
+                    DebugWrite($"Error: Rotor block is null!\n", true);
+                    throw new ArgumentException($"Rotor block is null!\n");
+                }
+                    
                 RotorBlock = rotorBlock;
                 IsInverted = RotorBlock.CustomData.Contains("-Inverted");
             }
