@@ -101,7 +101,7 @@ namespace IngameScript
                 sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  CTRL MODE: {GetName(_armControl.ControlMode)}");
                 sb.AppendLine("  ARM POS:");
-                sb.AppendLine($"    X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
+                sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
                 return sb.ToString();
             }
         }
