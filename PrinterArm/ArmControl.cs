@@ -111,8 +111,6 @@ namespace IngameScript
                 Matrix H0_7 = H7 * H0_6;
                 Matrix H0_8 = H8 * H0_7;
 
-                //DebugDraw.DrawMatrix(HT * _joint0.RotorBlock.WorldMatrix, length: 2f);
-
                 Vector3 J0v = -1f * H0.Backward;
                 Vector3 J0w = Vector3.Zero;
                 double[] J0 = new double[6] { J0v.X, J0v.Y, J0v.Z, J0w.X, J0w.Y, J0w.Z };
