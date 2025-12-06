@@ -103,13 +103,13 @@ namespace IngameScript
                 EEPosition = currentCoord;
 
                 Matrix H0_1 = H1 * H0;
-                Matrix H0_2 = H2 * H1 * H0;
-                Matrix H0_3 = H3 * H2 * H1 * H0;
-                Matrix H0_4 = H4 * H3 * H2 * H1 * H0;
-                Matrix H0_5 = H5 * H4 * H3 * H2 * H1 * H0;
-                Matrix H0_6 = H6 * H5 * H4 * H3 * H2 * H1 * H0;
-                Matrix H0_7 = H7 * H6 * H5 * H4 * H3 * H2 * H1 * H0;
-                Matrix H0_8 = H8 * H7 * H6 * H5 * H4 * H3 * H2 * H1 * H0;
+                Matrix H0_2 = H2 * H0_1;
+                Matrix H0_3 = H3 * H0_2;
+                Matrix H0_4 = H4 * H0_3;
+                Matrix H0_5 = H5 * H0_4;
+                Matrix H0_6 = H6 * H0_5;
+                Matrix H0_7 = H7 * H0_6;
+                Matrix H0_8 = H8 * H0_7;
 
                 //DebugDraw.DrawMatrix(HT * _joint0.RotorBlock.WorldMatrix, length: 2f);
 
@@ -272,13 +272,7 @@ namespace IngameScript
                 double[] outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                 double[,] N = MyMath.NullSpaceProjector(J, J_pseudoInv);
                 double[] outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
-                double[] totalOutputSignal = new double[9];
-
-                for (int i = 0; i < 9; i++)
-                {
-                    totalOutputSignal[i] = outputSignal[i] + outputSignalNull[i];
-                }
-
+                double[] totalOutputSignal = MyMath.AddVectors(outputSignal, outputSignalNull);
                 bool oob = false;
 
                 _joint0.Velocity = (float)totalOutputSignal[0];
@@ -343,10 +337,8 @@ namespace IngameScript
                     outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
                     N = MyMath.NullSpaceProjector(J, J_pseudoInv);
                     outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
-                    for (int i = 0; i < 9; i++)
-                    {
-                        totalOutputSignal[i] = outputSignal[i] + outputSignalNull[i];
-                    }
+                    totalOutputSignal = MyMath.AddVectors(outputSignal, outputSignalNull);
+
                     _joint0.Velocity = (float)totalOutputSignal[0];
                     if (_joint0.IsSaturated)
                     {
