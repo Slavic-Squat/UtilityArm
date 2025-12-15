@@ -33,6 +33,7 @@ namespace IngameScript
 
             public bool ArmCtrl { get; private set; } = false;
             public bool RemoteCtrl { get; private set; } = false;
+            public double Time { get; private set; }
             public PrinterArm()
             {
                 _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.Contains("Printer Arm Controller")) as IMyShipController;
@@ -57,6 +58,11 @@ namespace IngameScript
 
             public void Run(double time)
             {
+                if (Time == 0)
+                {
+                    Time = time;
+                    return;
+                }
                 _userInput.Run(time);
                 _remoteInput.Run(time);
                 _display.WriteText(Status());
@@ -73,7 +79,8 @@ namespace IngameScript
                 else
                 {
                     _armControl.Control(_remoteInput);
-                }                
+                }
+                Time = time;
             }
 
             public void ToggleArmControl()

@@ -24,45 +24,32 @@ namespace IngameScript
     {
         public class SystemCoordinator
         {
-            public static double SystemTime { get; private set; }
-            public MyIni Config { get; private set; }
-            public CommandHandler CommandHandler { get; private set; }
             public PrinterArm PrinterArm { get; private set; }
+            public double Time { get; private set; }
 
             public SystemCoordinator()
             {
-                GetBlocks();
                 Init();                
-            }
-
-            private void GetBlocks()
-            {
-
             }
 
             private void Init()
             {
-                CommandHandler = new CommandHandler();
                 PrinterArm = new PrinterArm();
 
-                CommandHandler.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
-                CommandHandler.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
-                CommandHandler.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
+                CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
+                CommandHandler0.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
+                CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
             }
 
-            public void Run()
+            public void Run(double time)
             {
-                SystemTime += RuntimeInfo.TimeSinceLastRun.TotalSeconds;
-                DebugEcho($"System Time: {SystemTime:F2}s\n");
-                DebugWrite($"System Time: {SystemTime:F2}s\n", false);
-                DebugEcho($"Last Run Time: {RuntimeInfo.LastRunTimeMs}ms\n");
-                DebugWrite($"Last Run Time: {RuntimeInfo.LastRunTimeMs}ms\n", true);
-                PrinterArm.Run(SystemTime);
-            }
-
-            public void Command(string command)
-            {
-                CommandHandler.RunCommands(command);
+                if (Time == 0)
+                {
+                    Time = time;
+                    return;
+                }
+                PrinterArm.Run(time);
+                Time = time;
             }
 
             public void ToggleArmControl()

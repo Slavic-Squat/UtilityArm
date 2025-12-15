@@ -30,6 +30,9 @@ namespace IngameScript
         public static List<IMyTerminalBlock> AllGridBlocks { get; private set; } = new List<IMyTerminalBlock>();
         public static IMyIntergridCommunicationSystem IGCS { get; private set; }
         public static IMyGridProgramRuntimeInfo RuntimeInfo { get; private set; }
+        public static double SystemTime { get; private set; }
+        public static MyIni Config { get; private set; }
+        public static CommandHandler CommandHandler0 { get; private set; }
 
         public static int DebugCounter { get; set; } = 0;
 
@@ -45,7 +48,14 @@ namespace IngameScript
             
             GridTerminalSystem.GetBlocksOfType(AllGridBlocks, b => b.IsSameConstructAs(Me));
 
+            Config = new MyIni();
+            if (!Config.TryParse(MePb.CustomData))
+            {
+                Config.Clear();
+            }
+            CommandHandler0 = new CommandHandler();
             _systemCoordinator = new SystemCoordinator();
+            MePb.CustomData = Config.ToString();
         }
 
         public void Save()
@@ -55,11 +65,17 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
+            SystemTime += RuntimeInfo.TimeSinceLastRun.TotalSeconds;
+            DebugEcho($"System Time: {SystemTime:F2}s\n");
+            DebugWrite($"System Time: {SystemTime:F2}s\n", false);
+            DebugEcho($"Last Run Time: {RuntimeInfo.LastRunTimeMs:F2}ms\n");
+            DebugWrite($"Last Run Time: {RuntimeInfo.LastRunTimeMs:F2}ms\n", true);
+
             if (argument != null)
             {
-                _systemCoordinator.Command(argument);
+                CommandHandler0.RunCommands(argument);
             }
-            _systemCoordinator.Run();
+            _systemCoordinator.Run(SystemTime);
         }
     }
 }
