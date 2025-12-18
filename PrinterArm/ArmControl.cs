@@ -425,7 +425,7 @@ namespace IngameScript
 
             public void CycleControlMode()
             {
-                ControlMode = NextArmControlMode(ControlMode);
+                ControlMode = ArmEnumsHelper.NextArmControlMode(ControlMode);
             }
         }
     }

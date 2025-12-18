@@ -106,7 +106,7 @@ namespace IngameScript
                 sb.AppendLine("[PRINTER ARM STATUS]");
                 sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  CTRL MODE: {GetName(_armControl.ControlMode)}");
+                sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
                 sb.AppendLine("  ARM POS:");
                 sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
                 return sb.ToString();
