@@ -36,13 +36,13 @@ namespace IngameScript
             public double Time { get; private set; }
             public PrinterArm()
             {
-                _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.Contains("Printer Arm Controller")) as IMyShipController;
+                _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.ToUpper().Contains("PRINTER ARM CONTROLLER")) as IMyShipController;
                 if (_armController == null)
                 {
                     DebugWrite("Controller for printer arm not found!\n", true);
                     throw new Exception("Controller for printer arm not found!\n");
                 }
-                _remoteControl = AllGridBlocks.Find(b => b is IMyRemoteControl && b.CustomName.Contains("Printer Arm RC")) as IMyRemoteControl;
+                _remoteControl = AllGridBlocks.Find(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains("PRINTER ARM RC")) as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
                     DebugWrite("RC for printer arm not found!\n", true);

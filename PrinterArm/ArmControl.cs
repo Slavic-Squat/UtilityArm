@@ -49,19 +49,19 @@ namespace IngameScript
 
             public ArmControl()
             {
-                Piston joint0_0 = new Piston("Printer Arm Joint 0_0");
-                Piston joint0_1 = new Piston("Printer Arm Joint 0_1");
-                Piston joint0_2 = new Piston("Printer Arm Joint 0_2");
-                Piston joint0_3 = new Piston("Printer Arm Joint 0_3");
+                Piston joint0_0 = new Piston("PRINTER ARM JOINT 0_0");
+                Piston joint0_1 = new Piston("PRINTER ARM JOINT 0_1");
+                Piston joint0_2 = new Piston("PRINTER ARM JOINT 0_2");
+                Piston joint0_3 = new Piston("PRINTER ARM JOINT 0_3");
                 _joint0 = new PistonSeries(joint0_0, joint0_1, joint0_2, joint0_3);
-                _joint1 = new Rotor("Printer Arm Joint 1");
-                _joint2 = new Rotor("Printer Arm Joint 2");
-                _joint3 = new Piston("Printer Arm Joint 3");
-                _joint4 = new Rotor("Printer Arm Joint 4");
-                _joint5 = new Piston("Printer Arm Joint 5");
-                _joint6 = new Rotor("Printer Arm Joint 6");
-                _joint7 = new Rotor("Printer Arm Joint 7");
-                _joint8 = new Rotor("Printer Arm Joint 8");
+                _joint1 = new Rotor("PRINTER ARM JOINT 1");
+                _joint2 = new Rotor("PRINTER ARM JOINT 2");
+                _joint3 = new Piston("PRINTER ARM JOINT 3");
+                _joint4 = new Rotor("PRINTER ARM JOINT 4");
+                _joint5 = new Piston("PRINTER ARM JOINT 5");
+                _joint6 = new Rotor("PRINTER ARM JOINT 6");
+                _joint7 = new Rotor("PRINTER ARM JOINT 7");
+                _joint8 = new Rotor("PRINTER ARM JOINT 8");
 
                 _baseVector = new Vector3(0, 0, -18.2f);
                 _seg0Vector = new Vector3(0, -4.15f, -1.25f);
