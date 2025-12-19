@@ -36,17 +36,17 @@ namespace IngameScript
             public double Time { get; private set; }
             public PrinterArm()
             {
-                _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.ToUpper().Contains("PRINTER ARM CONTROLLER")) as IMyShipController;
+                _armController = AllGridBlocks.Find(b => b is IMyShipController && b.CustomName.ToUpper().Contains("ARM CONTROLLER")) as IMyShipController;
                 if (_armController == null)
                 {
-                    DebugWrite("Controller for printer arm not found!\n", true);
-                    throw new Exception("Controller for printer arm not found!\n");
+                    DebugWrite("Controller for arm not found!\n", true);
+                    throw new Exception("Controller for arm not found!\n");
                 }
-                _remoteControl = AllGridBlocks.Find(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains("PRINTER ARM RC")) as IMyRemoteControl;
+                _remoteControl = AllGridBlocks.Find(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains("ARM RC")) as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
-                    DebugWrite("RC for printer arm not found!\n", true);
-                    throw new Exception("RC for printer arm not found!\n");
+                    DebugWrite("RC for arm not found!\n", true);
+                    throw new Exception("RC for arm not found!\n");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
                 _display = surfaceProvider.GetSurface(1);
@@ -103,7 +103,7 @@ namespace IngameScript
             public string Status()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("[PRINTER ARM STATUS]");
+                sb.AppendLine("[ARM STATUS]");
                 sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
