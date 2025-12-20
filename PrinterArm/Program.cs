@@ -36,6 +36,9 @@ namespace IngameScript
 
         public static int DebugCounter { get; set; } = 0;
 
+        private const string _programName = "PrinterArm";
+        private const string _programVersion = "1.0";
+
         public Program()
         {
             DebugEcho = Echo;
@@ -66,8 +69,10 @@ namespace IngameScript
         public void Main(string argument, UpdateType updateSource)
         {
             SystemTime += RuntimeInfo.TimeSinceLastRun.TotalSeconds;
+            DebugEcho($"[{_programName}] | Version: {_programVersion}\n");
+            DebugWrite($"[{_programName}] | Version: {_programVersion}\n", false);
             DebugEcho($"System Time: {SystemTime:F2}s\n");
-            DebugWrite($"System Time: {SystemTime:F2}s\n", false);
+            DebugWrite($"System Time: {SystemTime:F2}s\n", true);
             DebugEcho($"Last Run Time: {RuntimeInfo.LastRunTimeMs:F2}ms\n");
             DebugWrite($"Last Run Time: {RuntimeInfo.LastRunTimeMs:F2}ms\n", true);
 
