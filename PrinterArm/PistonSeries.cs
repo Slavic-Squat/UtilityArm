@@ -24,8 +24,7 @@ namespace IngameScript
     {
         public class PistonSeries
         {
-            private List<Piston> _pistons = new List<Piston>();
-
+            public IReadOnlyList<Piston> Pistons => _pistons;
             public float CurrentExtension => _pistons.Sum(p => p.CurrentExtension);
             public float MinExtension => _pistons.Sum(p => p.MinExtension);
             public float MaxExtension => _pistons.Sum(p => p.MaxExtension);
@@ -87,6 +86,7 @@ namespace IngameScript
                 }
             }
 
+            private List<Piston> _pistons = new List<Piston>();
             private float _targetVelocity;
 
             public PistonSeries(params Piston[] pistons)

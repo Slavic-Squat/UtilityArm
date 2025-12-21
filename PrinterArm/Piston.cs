@@ -83,7 +83,7 @@ namespace IngameScript
             public Piston(string blockName)
             {
                 blockName = blockName.ToUpper();
-                PistonBlock = AllGridBlocks.Find(b => b is IMyPistonBase && b.CustomName.ToUpper().Contains(blockName)) as IMyPistonBase;
+                PistonBlock = AllGridBlocks.Where(b => b is IMyPistonBase && b.CustomName.ToUpper().Contains(blockName)).FirstOrDefault() as IMyPistonBase;
                 if (PistonBlock == null)
                 {
                     DebugWrite($"Piston block '{blockName}' not found!\n", true);

@@ -22,22 +22,24 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        private SystemCoordinator _systemCoordinator;
         public static Action<string> DebugEcho { get; private set; }
         public static Action<string, bool> DebugWrite { get; private set; }
         public static IMyProgrammableBlock MePb { get; private set; }
         public static IMyGridTerminalSystem GTS { get; private set; }
-        public static List<IMyTerminalBlock> AllGridBlocks { get; private set; } = new List<IMyTerminalBlock>();
+        public static IReadOnlyList<IMyTerminalBlock> AllGridBlocks => _allGridBlocks;
         public static IMyIntergridCommunicationSystem IGCS { get; private set; }
         public static IMyGridProgramRuntimeInfo RuntimeInfo { get; private set; }
         public static double SystemTime { get; private set; }
         public static MyIni Config { get; private set; }
         public static CommandHandler CommandHandler0 { get; private set; }
-
         public static int DebugCounter { get; set; } = 0;
 
+        private static List<IMyTerminalBlock> _allGridBlocks = new List<IMyTerminalBlock>();
         private const string _programName = "PrinterArm";
-        private const string _programVersion = "1.0";
+        private const string _programVersion = "1.01";
+        private static string _gridBlockTag;
+
+        private SystemCoordinator _systemCoordinator;
 
         public Program()
         {
@@ -48,16 +50,19 @@ namespace IngameScript
             RuntimeInfo = Runtime;
             MePb = Me;
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
-            
-            GridTerminalSystem.GetBlocksOfType(AllGridBlocks, b => b.IsSameConstructAs(Me));
 
             Config = new MyIni();
             if (!Config.TryParse(MePb.CustomData))
             {
                 Config.Clear();
             }
+
+            _gridBlockTag = Config.Get("Config", "GridBlockTag").ToString("NOT_SET");
+            GridTerminalSystem.GetBlocksOfType(_allGridBlocks, b => b.IsSameConstructAs(Me) && b.CustomName.ToUpper().Contains(_gridBlockTag.ToUpper()));
+
             CommandHandler0 = new CommandHandler();
             _systemCoordinator = new SystemCoordinator();
+
             MePb.CustomData = Config.ToString();
         }
 
