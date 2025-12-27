@@ -32,14 +32,14 @@ namespace IngameScript
 
         public static class ArmEnumsHelper
         {
-            private static readonly ArmControlMode[] ArmControlModeCycles = new ArmControlMode[] { ArmControlMode.Translate, ArmControlMode.Rotate, ArmControlMode.Pose };
+            private static readonly ArmControlMode[] _armControlModeCycles = new ArmControlMode[] { ArmControlMode.Translate, ArmControlMode.Rotate, ArmControlMode.Pose };
 
             public static ArmControlMode NextArmControlMode(ArmControlMode mode)
             {
-                int index = Array.IndexOf(ArmControlModeCycles, mode);
-                if (index < 0) return ArmControlModeCycles[0];
-                index = (index + 1) % ArmControlModeCycles.Length;
-                return ArmControlModeCycles[index];
+                int index = Array.IndexOf(_armControlModeCycles, mode);
+                if (index < 0) return _armControlModeCycles[0];
+                index = (index + 1) % _armControlModeCycles.Length;
+                return _armControlModeCycles[index];
             }
 
             public static string GetArmControlModeStr(ArmControlMode mode)

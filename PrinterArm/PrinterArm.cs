@@ -65,7 +65,7 @@ namespace IngameScript
                 }
                 _userInput.Run(time);
                 _remoteInput.Run(time);
-                _display.WriteText(Status());
+                _display.WriteText(GetOverview());
 
                 if (!ArmCtrl)
                 {
@@ -100,10 +100,10 @@ namespace IngameScript
                 _armControl.CycleControlMode();
             }
 
-            public string Status()
+            public string GetOverview()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("[ARM STATUS]");
+                sb.AppendLine("[ARM OVERVIEW]");
                 sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
