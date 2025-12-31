@@ -44,7 +44,21 @@ namespace IngameScript
             private Rotor _joint8;
             private Vector3 _seg8Vector;
 
+            private Vector3 _seg7VectorDetached = new Vector3(0, 0, -1.3f);
+            private Vector3 _seg7VectorAttached = new Vector3(0, 0, -1.7f);
+
+            private Vector3 _seg8VectorWelder = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg8VectorGrinder = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg8VectorDrill = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg8VectorConnector = new Vector3(0, 0, -1.0f);
+            private Vector3 _seg8VectorMagnet = new Vector3(0, 0, -1.5f);
+            private Vector3 _seg8VectorUndefined = Vector3.Zero;
+            private Vector3 _seg8VectorEmpty = Vector3.Zero;
+
             public ArmControlMode ControlMode { get; private set; } = ArmControlMode.Translate;
+            public TranslationMode TranslationMode { get; private set; } = TranslationMode.World;
+            public ArmAttachment Attachment { get; private set; } = ArmAttachment.Undefined;
+            public bool HasAttachment => Attachment != ArmAttachment.Empty;
             public Vector3 EEPosition { get; private set; }
 
             public ArmControl()
@@ -71,12 +85,52 @@ namespace IngameScript
                 _seg4Vector = new Vector3(-1.25f, 0, -6.4f);
                 _seg5Vector = new Vector3(0, 0, -1.25f);
                 _seg6Vector = new Vector3(0, 0, -1.5f);
-                _seg7Vector = new Vector3(0, 0, -1.7f);
-                _seg8Vector = new Vector3(0, 0, -3.5f);
             }
 
             public void Control(UserInput userInput)
             {
+                if (!_joint8.RotorBlock.IsAttached)
+                {
+                    Attachment = ArmAttachment.Empty;
+                }
+                else
+                {
+                    if (Attachment == ArmAttachment.Empty)
+                    {
+                        Attachment = ArmAttachment.Undefined;
+                    }
+                }
+
+                _seg7Vector = HasAttachment ? _seg7VectorAttached : _seg7VectorDetached;
+
+                switch (Attachment)
+                {
+                    case ArmAttachment.Welder:
+                        _seg8Vector = _seg8VectorWelder;
+                        break;
+                    case ArmAttachment.Grinder:
+                        _seg8Vector = _seg8VectorGrinder;
+                        break;
+                    case ArmAttachment.Drill:
+                        _seg8Vector = _seg8VectorDrill;
+                        break;
+                    case ArmAttachment.Connector:
+                        _seg8Vector = _seg8VectorConnector;
+                        break;
+                    case ArmAttachment.Magnet:
+                        _seg8Vector = _seg8VectorMagnet;
+                        break;
+                    case ArmAttachment.Undefined:
+                        _seg8Vector = _seg8VectorUndefined;
+                        break;
+                    case ArmAttachment.Empty:
+                        _seg8Vector = _seg8VectorEmpty;
+                        break;
+                    default:
+                        _seg8Vector = Vector3.Zero;
+                        break;
+                }
+
                 Matrix H0 = Matrix.Identity;
                 H0.Translation = _baseVector;
                 Matrix H1 = Matrix.CreateRotationY(_joint1.CurrentAngle);
@@ -163,6 +217,12 @@ namespace IngameScript
                     { J0[5], J1[5], J2[5], J3[5], J4[5], J5[5], J6[5], J7[5], J8[5] }
                 };
 
+                if (!HasAttachment)
+                {
+                    MyMath.SetRow(J, 5, new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 });
+                    MyMath.SetColumn(J, 8, new double[6] { 0, 0, 0, 0, 0, 0 });
+                }
+
                 double[] taskWeights = new double[6] { 1, 1, 1, 10, 10, 10 };
                 double[] jointWeights = new double[9] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
@@ -177,30 +237,59 @@ namespace IngameScript
                 Vector3 rot1 = Vector3.Zero;
                 Vector3 rot2 = Vector3.Zero;
 
+                TranslationMode = HasAttachment ? TranslationMode : TranslationMode.World;
+
+                Vector3 transXDir;
+                Vector3 transYDir;
+                Vector3 transZDir;
+
+                Vector3 rotXDir = Vector3.Right;
+                Vector3 rotYDir = Vector3.Up;
+                Vector3 rotZDir = Vector3.Backward;
+
+                switch (TranslationMode)
+                {
+                    case TranslationMode.World:
+                        transXDir = Vector3.Right;
+                        transYDir = Vector3.Up;
+                        transZDir = Vector3.Backward;
+                        break;
+                    case TranslationMode.Local:
+                        transXDir = HT.Right;
+                        transYDir = HT.Up;
+                        transZDir = HT.Backward;
+                        break;
+                    default:
+                        transXDir = Vector3.Right;
+                        transYDir = Vector3.Up;
+                        transZDir = Vector3.Backward;
+                        break;
+                }
+
                 switch (ControlMode)
                 {
                     case ArmControlMode.Translate:
                         {
-                            if (userInput.WPress) trans0 = -1f * Vector3.Backward;
-                            else if (userInput.SPress) trans0 = 1f * Vector3.Backward;
+                            if (userInput.WPress) trans0 = -1f * transZDir;
+                            else if (userInput.SPress) trans0 = 1f * transZDir;
 
-                            if (userInput.APress) trans1 = -1f * Vector3.Right;
-                            else if (userInput.DPress) trans1 = 1f * Vector3.Right;
+                            if (userInput.APress) trans1 = -1f * transXDir;
+                            else if (userInput.DPress) trans1 = 1f * transXDir;
 
-                            if (userInput.SpacePress) trans2 = 1f * Vector3.Up;
-                            else if (userInput.CPress) trans2 = -1f * Vector3.Up;
+                            if (userInput.SpacePress) trans2 = 1f * transYDir;
+                            else if (userInput.CPress) trans2 = -1f * transYDir;
                             break;
                         }
                     case ArmControlMode.Rotate:
                         {
-                            if (userInput.SpacePress) rot1 = 0.2f * Vector3.Right;
-                            else if (userInput.CPress) rot1 = -0.2f * Vector3.Right;
+                            if (userInput.SpacePress) rot1 = 0.2f * rotXDir;
+                            else if (userInput.CPress) rot1 = -0.2f * rotXDir;
 
-                            if (userInput.APress) rot0 = 0.2f * Vector3.Up;
-                            else if (userInput.DPress) rot0 = -0.2f * Vector3.Up;
+                            if (userInput.APress) rot0 = 0.2f * rotYDir;
+                            else if (userInput.DPress) rot0 = -0.2f * rotYDir;
 
-                            if (userInput.QPress) rot2 = 0.2f * Vector3.Backward;
-                            else if (userInput.EPress) rot2 = -0.2f * Vector3.Backward;
+                            if (userInput.QPress) rot2 = 0.2f * transZDir;
+                            else if (userInput.EPress) rot2 = -0.2f * transZDir;
                             break;
                         }
                     case ArmControlMode.Pose:
@@ -265,6 +354,12 @@ namespace IngameScript
                 inputSignal[3] = rotInput.X;
                 inputSignal[4] = rotInput.Y;
                 inputSignal[5] = rotInput.Z;
+
+                if (!HasAttachment)
+                {
+                    inputSignal[5] = 0f;
+                    inputSignalNull[8] = 0f;
+                }
 
                 double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.1f);
                 double[] outputSignal = MyMath.MultiplyMatrixVector(J_pseudoInv, inputSignal);
@@ -426,6 +521,16 @@ namespace IngameScript
             public void CycleControlMode()
             {
                 ControlMode = ArmEnumsHelper.NextArmControlMode(ControlMode);
+            }
+
+            public void CycleAttachment()
+            {
+                Attachment = ArmEnumsHelper.NextArmAttachment(Attachment);
+            }
+
+            public void CycleTranslationMode()
+            {
+                TranslationMode = ArmEnumsHelper.NextTranslationMode(TranslationMode);
             }
         }
     }

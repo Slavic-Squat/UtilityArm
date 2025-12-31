@@ -30,9 +30,30 @@ namespace IngameScript
             Undefined
         }
 
+        public enum TranslationMode
+        {
+            Local,
+            World
+        }
+
+        public enum ArmAttachment
+        {
+            Empty,
+            Welder,
+            Grinder,
+            Drill,
+            Connector,
+            Magnet,
+            Undefined
+        }
+
         public static class ArmEnumsHelper
         {
+            private static readonly ArmAttachment[] _armAttachmentCycles = new ArmAttachment[] { ArmAttachment.Welder, ArmAttachment.Grinder, ArmAttachment.Drill, ArmAttachment.Connector, ArmAttachment.Magnet };
+
             private static readonly ArmControlMode[] _armControlModeCycles = new ArmControlMode[] { ArmControlMode.Translate, ArmControlMode.Rotate, ArmControlMode.Pose };
+
+            private static readonly TranslationMode[] _translationModeCycles = new TranslationMode[] { TranslationMode.Local, TranslationMode.World };
 
             public static ArmControlMode NextArmControlMode(ArmControlMode mode)
             {
@@ -40,6 +61,22 @@ namespace IngameScript
                 if (index < 0) return _armControlModeCycles[0];
                 index = (index + 1) % _armControlModeCycles.Length;
                 return _armControlModeCycles[index];
+            }
+
+            public static ArmAttachment NextArmAttachment(ArmAttachment attachment)
+            {
+                int index = Array.IndexOf(_armAttachmentCycles, attachment);
+                if (index < 0) return _armAttachmentCycles[0];
+                index = (index + 1) % _armAttachmentCycles.Length;
+                return _armAttachmentCycles[index];
+            }
+
+            public static TranslationMode NextTranslationMode(TranslationMode mode)
+            {
+                int index = Array.IndexOf(_translationModeCycles, mode);
+                if (index < 0) return _translationModeCycles[0];
+                index = (index + 1) % _translationModeCycles.Length;
+                return _translationModeCycles[index];
             }
 
             public static string GetArmControlModeStr(ArmControlMode mode)
@@ -53,6 +90,30 @@ namespace IngameScript
                 }
             }
 
+            public static string GetAttachmentStr(ArmAttachment attachment)
+            {
+                switch (attachment)
+                {
+                    case ArmAttachment.Empty: return "EMPTY";
+                    case ArmAttachment.Welder: return "WELDER";
+                    case ArmAttachment.Grinder: return "GRINDER";
+                    case ArmAttachment.Drill: return "DRILL";
+                    case ArmAttachment.Connector: return "CONNECTOR";
+                    case ArmAttachment.Magnet: return "MAGNET";
+                    default: return "N/A";
+                }
+            }
+
+            public static string GetTranslationModeStr(TranslationMode mode)
+            {
+                switch (mode)
+                {
+                    case TranslationMode.Local: return "LOCAL";
+                    case TranslationMode.World: return "WORLD";
+                    default: return "N/A";
+                }
+            }
+
             public static ArmControlMode GetArmControlMode(string modeStr)
             {
                 switch (modeStr.ToUpper())
@@ -61,6 +122,30 @@ namespace IngameScript
                     case "ROT": return ArmControlMode.Rotate;
                     case "POSE": return ArmControlMode.Pose;
                     default: return ArmControlMode.Undefined;
+                }
+            }
+
+            public static ArmAttachment GetArmAttachment(string attachmentStr)
+            {
+                switch (attachmentStr.ToUpper())
+                {
+                    case "EMPTY": return ArmAttachment.Empty;
+                    case "WELDER": return ArmAttachment.Welder;
+                    case "GRINDER": return ArmAttachment.Grinder;
+                    case "DRILL": return ArmAttachment.Drill;
+                    case "CONNECTOR": return ArmAttachment.Connector;
+                    case "MAGNET": return ArmAttachment.Magnet;
+                    default: return ArmAttachment.Undefined;
+                }
+            }
+
+            public static TranslationMode GetTranslationMode(string modeStr)
+            {
+                switch (modeStr.ToUpper())
+                {
+                    case "LOCAL": return TranslationMode.Local;
+                    case "WORLD": return TranslationMode.World;
+                    default: return TranslationMode.Local;
                 }
             }
         }

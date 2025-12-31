@@ -39,6 +39,8 @@ namespace IngameScript
                 CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
                 CommandHandler0.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
+                CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
+                CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
             }
 
             public void Run(double time)
@@ -65,6 +67,16 @@ namespace IngameScript
             public void CycleArmControlMode()
             {
                 PrinterArm.CycleArmControlMode();
+            }
+
+            public void CycleAttachment()
+            {
+                PrinterArm.CycleAttachment();
+            }
+
+            public void CycleTranslationMode()
+            {
+                PrinterArm.CycleTranslationMode();
             }
         }
     }

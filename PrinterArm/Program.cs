@@ -36,7 +36,7 @@ namespace IngameScript
 
         private static List<IMyTerminalBlock> _allGridBlocks = new List<IMyTerminalBlock>();
         private const string _programName = "PrinterArm";
-        private const string _programVersion = "1.02";
+        private const string _programVersion = "1.03";
         private static string _gridBlockTag;
 
         private SystemCoordinator _systemCoordinator;

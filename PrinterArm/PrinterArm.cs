@@ -100,6 +100,18 @@ namespace IngameScript
                 _armControl.CycleControlMode();
             }
 
+            public void CycleAttachment()
+            {
+                if (!ArmCtrl) return;
+                _armControl.CycleAttachment();
+            }
+
+            public void CycleTranslationMode()
+            {
+                if (!ArmCtrl && _armControl.ControlMode != ArmControlMode.Translate) return;
+                _armControl.CycleTranslationMode();
+            }
+
             public string GetOverview()
             {
                 StringBuilder sb = new StringBuilder();
@@ -107,6 +119,11 @@ namespace IngameScript
                 sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
+                if (_armControl.ControlMode == ArmControlMode.Translate)
+                {
+                    sb.AppendLine($"    - TRANS MODE: {ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode)}");
+                }
+                sb.AppendLine($"  ATTACHMENT: {ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment)}");
                 sb.AppendLine("  ARM POS:");
                 sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
                 return sb.ToString();
