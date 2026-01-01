@@ -24,6 +24,7 @@ namespace IngameScript
     {
         public class ArmControl
         {
+            private PistonSeries _basePistons;
             private Vector3 _baseVector;
             private Rotor _joint0;
             private Vector3 _seg0Vector;
@@ -58,21 +59,26 @@ namespace IngameScript
             public ArmAttachment Attachment { get; private set; } = ArmAttachment.Undefined;
             public bool HasAttachment => Attachment != ArmAttachment.Empty;
             public Vector3 EEPosition { get; private set; }
+            public string ID { get; private set; }
 
-            public ArmControl()
+            public ArmControl(string id)
             {
-                _joint0 = new Rotor("ARM JOINT 0");
-                _joint1 = new Rotor("ARM JOINT 1");
-                Piston joint2_0 = new Piston("ARM JOINT 2_0");
-                Piston joint2_1 = new Piston("ARM JOINT 2_1");
+                ID = id.ToUpper();
+                Piston basePiston0 = new Piston($"{ID} BASE PISTON 0");
+                Piston basePiston1 = new Piston($"{ID} BASE PISTON 1");
+                _basePistons = new PistonSeries(basePiston0, basePiston1);
+                _joint0 = new Rotor($"{ID} ARM JOINT 0");
+                _joint1 = new Rotor($"{ID} ARM JOINT 1");
+                Piston joint2_0 = new Piston($"{ID} ARM JOINT 2_0");
+                Piston joint2_1 = new Piston($"{ID} ARM JOINT 2_1");
                 _joint2 = new PistonSeries(joint2_0, joint2_1);
-                _joint3 = new Rotor("ARM JOINT 3");
-                Piston joint4_0 = new Piston("ARM JOINT 4_0");
-                Piston joint4_1 = new Piston("ARM JOINT 4_1");
+                _joint3 = new Rotor($"{ID} ARM JOINT 3");
+                Piston joint4_0 = new Piston($"{ID} ARM JOINT 4_0");
+                Piston joint4_1 = new Piston($"{ID} ARM JOINT 4_1");
                 _joint4 = new PistonSeries(joint4_0, joint4_1);
-                _joint5 = new Rotor("ARM JOINT 5");
-                _joint6 = new Rotor("ARM JOINT 6");
-                _joint7 = new Rotor("ARM JOINT 7");
+                _joint5 = new Rotor($"{ID} ARM JOINT 5");
+                _joint6 = new Rotor($"{ID} ARM JOINT 6");
+                _joint7 = new Rotor($"{ID} ARM JOINT 7");
 
                 _baseVector = new Vector3(0, 1.45f, 0);
                 _seg0Vector = new Vector3(4.0f, 1.25f, 0);
@@ -309,6 +315,19 @@ namespace IngameScript
                             {
                                 inputSignalNull[1] = -0.2f;
                                 jointWeights[1] = double.MaxValue;
+                            }
+
+                            if (userInput.APress)
+                            {
+                                _basePistons.Velocity = 1f;
+                            }
+                            else if (userInput.DPress)
+                            {
+                                _basePistons.Velocity = -1f;
+                            }
+                            else
+                            {
+                                _basePistons.Velocity = 0f;
                             }
 
                             break;

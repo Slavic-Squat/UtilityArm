@@ -34,7 +34,9 @@ namespace IngameScript
 
             private void Init()
             {
-                PrinterArm = new PrinterArm();
+                string armID = Config.Get("Config", "ArmID").ToString("PrinterArm");
+                Config.Set("Config", "ArmID", armID);
+                PrinterArm = new PrinterArm(armID);
 
                 CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
                 CommandHandler0.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
