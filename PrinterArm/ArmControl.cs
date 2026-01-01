@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using BulletXNA;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -24,6 +25,7 @@ namespace IngameScript
     {
         public class ArmControl
         {
+            private PistonSeries _basePistons;
             private Vector3 _baseVector;
             private Rotor _joint0;
             private Vector3 _seg0Vector;
@@ -63,6 +65,11 @@ namespace IngameScript
             public ArmControl(string id)
             {
                 ID = id.ToUpper();
+                Piston basePiston0 = new Piston($"{ID} BASE PISTON 0");
+                Piston basePiston1 = new Piston($"{ID} BASE PISTON 1");
+                Piston basePiston2 = new Piston($"{ID} BASE PISTON 2");
+                Piston basePiston3 = new Piston($"{ID} BASE PISTON 3");
+                _basePistons = new PistonSeries(basePiston0, basePiston1, basePiston2, basePiston3);
                 _joint0 = new Rotor($"{ID} ARM JOINT 0");
                 _joint1 = new Rotor($"{ID} ARM JOINT 1");
                 _joint2 = new Piston($"{ID} ARM JOINT 2");
@@ -72,11 +79,11 @@ namespace IngameScript
                 _joint6 = new Rotor($"{ID} ARM JOINT 6");
                 _joint7 = new Rotor($"{ID} ARM JOINT 7");
 
-                _baseVector = new Vector3(0, -1.45f, 0);
-                _seg0Vector = new Vector3(4.0f, 1.25f, 0);
-                _seg1Vector = new Vector3(1.25f, 0, -11.6f);
+                _baseVector = new Vector3(0, -1.65f, 0);
+                _seg0Vector = new Vector3(4.0f, -1.25f, 0);
+                _seg1Vector = new Vector3(1.25f, 0, -6.4f);
                 _seg2Vector = new Vector3(-4.0f, 0, -1.25f);
-                _seg3Vector = new Vector3(-1.25f, 0, -11.6f);
+                _seg3Vector = new Vector3(-1.25f, 0, -6.4f);
                 _seg4Vector = new Vector3(0, 0, -1.25f);
                 _seg5Vector = new Vector3(0, 0, -1.5f);
             }
@@ -307,6 +314,19 @@ namespace IngameScript
                             {
                                 inputSignalNull[1] = -0.2f;
                                 jointWeights[1] = double.MaxValue;
+                            }
+
+                            if (userInput.WPress)
+                            {
+                                _basePistons.Velocity = 1f;
+                            }
+                            else if (userInput.SPress)
+                            {
+                                _basePistons.Velocity = -1f;
+                            }
+                            else
+                            {
+                                _basePistons.Velocity = 0f;
                             }
 
                             break;
