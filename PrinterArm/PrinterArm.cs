@@ -34,15 +34,17 @@ namespace IngameScript
             public bool ArmCtrl { get; private set; } = false;
             public bool RemoteCtrl { get; private set; } = false;
             public double Time { get; private set; }
-            public PrinterArm()
+            public string ID { get; private set; }
+            public PrinterArm(string id)
             {
-                _armController = AllGridBlocks.Where(b => b is IMyShipController && b.CustomName.ToUpper().Contains("ARM CONTROLLER")).FirstOrDefault() as IMyShipController;
+                ID = id.ToUpper();
+                _armController = AllGridBlocks.Where(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")).FirstOrDefault() as IMyShipController;
                 if (_armController == null)
                 {
                     DebugWrite("Controller for arm not found!\n", true);
                     throw new Exception("Controller for arm not found!\n");
                 }
-                _remoteControl = AllGridBlocks.Where(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains("ARM RC")).FirstOrDefault() as IMyRemoteControl;
+                _remoteControl = AllGridBlocks.Where(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains($"{ID} ARM RC")).FirstOrDefault() as IMyRemoteControl;
                 if (_remoteControl == null)
                 {
                     DebugWrite("RC for arm not found!\n", true);
@@ -53,7 +55,8 @@ namespace IngameScript
 
                 _userInput = new UserInput(_armController);
                 _remoteInput = new UserInput(_remoteControl);
-                _armControl = new ArmControl();
+
+                _armControl = new ArmControl(ID);
             }
 
             public void Run(double time)

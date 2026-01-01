@@ -25,71 +25,65 @@ namespace IngameScript
         public class ArmControl
         {
             private Vector3 _baseVector;
-            private PistonSeries _joint0;
+            private Rotor _joint0;
             private Vector3 _seg0Vector;
             private Rotor _joint1;
             private Vector3 _seg1Vector;
-            private Rotor _joint2;
+            private Piston _joint2;
             private Vector3 _seg2Vector;
-            private Piston _joint3;
+            private Rotor _joint3;
             private Vector3 _seg3Vector;
-            private Rotor _joint4;
+            private Piston _joint4;
             private Vector3 _seg4Vector;
-            private Piston _joint5;
+            private Rotor _joint5;
             private Vector3 _seg5Vector;
             private Rotor _joint6;
             private Vector3 _seg6Vector;
             private Rotor _joint7;
             private Vector3 _seg7Vector;
-            private Rotor _joint8;
-            private Vector3 _seg8Vector;
 
-            private Vector3 _seg7VectorDetached = new Vector3(0, 0, -1.3f);
-            private Vector3 _seg7VectorAttached = new Vector3(0, 0, -1.7f);
+            private Vector3 _seg6VectorDetached = new Vector3(0, 0, -1.3f);
+            private Vector3 _seg6VectorAttached = new Vector3(0, 0, -1.7f);
 
-            private Vector3 _seg8VectorWelder = new Vector3(0, 0, -3.1f);
-            private Vector3 _seg8VectorGrinder = new Vector3(0, 0, -3.1f);
-            private Vector3 _seg8VectorDrill = new Vector3(0, 0, -3.1f);
-            private Vector3 _seg8VectorConnector = new Vector3(0, 0, -1.0f);
-            private Vector3 _seg8VectorMagnet = new Vector3(0, 0, -1.5f);
-            private Vector3 _seg8VectorUndefined = Vector3.Zero;
-            private Vector3 _seg8VectorEmpty = Vector3.Zero;
+            private Vector3 _seg7VectorWelder = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg7VectorGrinder = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg7VectorDrill = new Vector3(0, 0, -3.1f);
+            private Vector3 _seg7VectorConnector = new Vector3(0, 0, -1.0f);
+            private Vector3 _seg7VectorMagnet = new Vector3(0, 0, -1.5f);
+            private Vector3 _seg7VectorUndefined = Vector3.Zero;
+            private Vector3 _seg7VectorEmpty = Vector3.Zero;
 
             public ArmControlMode ControlMode { get; private set; } = ArmControlMode.Translate;
             public TranslationMode TranslationMode { get; private set; } = TranslationMode.World;
             public ArmAttachment Attachment { get; private set; } = ArmAttachment.Undefined;
             public bool HasAttachment => Attachment != ArmAttachment.Empty;
             public Vector3 EEPosition { get; private set; }
+            public string ID { get; private set; }
 
-            public ArmControl()
+            public ArmControl(string id)
             {
-                Piston joint0_0 = new Piston("ARM JOINT 0_0");
-                Piston joint0_1 = new Piston("ARM JOINT 0_1");
-                Piston joint0_2 = new Piston("ARM JOINT 0_2");
-                Piston joint0_3 = new Piston("ARM JOINT 0_3");
-                _joint0 = new PistonSeries(joint0_0, joint0_1, joint0_2, joint0_3);
-                _joint1 = new Rotor("ARM JOINT 1");
-                _joint2 = new Rotor("ARM JOINT 2");
-                _joint3 = new Piston("ARM JOINT 3");
-                _joint4 = new Rotor("ARM JOINT 4");
-                _joint5 = new Piston("ARM JOINT 5");
-                _joint6 = new Rotor("ARM JOINT 6");
-                _joint7 = new Rotor("ARM JOINT 7");
-                _joint8 = new Rotor("ARM JOINT 8");
+                ID = id.ToUpper();
+                _joint0 = new Rotor($"{ID} ARM JOINT 0");
+                _joint1 = new Rotor($"{ID} ARM JOINT 1");
+                _joint2 = new Piston($"{ID} ARM JOINT 2");
+                _joint3 = new Rotor($"{ID} ARM JOINT 3");
+                _joint4 = new Piston($"{ID} ARM JOINT 4");
+                _joint5 = new Rotor($"{ID} ARM JOINT 5");
+                _joint6 = new Rotor($"{ID} ARM JOINT 6");
+                _joint7 = new Rotor($"{ID} ARM JOINT 7");
 
-                _baseVector = new Vector3(0, 0, -18.2f);
-                _seg0Vector = new Vector3(0, -4.15f, -1.25f);
-                _seg1Vector = new Vector3(3.95f, -1.25f, 0);
-                _seg2Vector = new Vector3(1.25f, 0, -6.35f);
-                _seg3Vector = new Vector3(-3.95f, 0, -1.25f);
-                _seg4Vector = new Vector3(-1.25f, 0, -6.4f);
-                _seg5Vector = new Vector3(0, 0, -1.25f);
-                _seg6Vector = new Vector3(0, 0, -1.5f);
+                _baseVector = new Vector3(0, -1.45f, 0);
+                _seg0Vector = new Vector3(4.0f, 1.25f, 0);
+                _seg1Vector = new Vector3(1.25f, 0, -11.6f);
+                _seg2Vector = new Vector3(-4.0f, 0, -1.25f);
+                _seg3Vector = new Vector3(-1.25f, 0, -11.6f);
+                _seg4Vector = new Vector3(0, 0, -1.25f);
+                _seg5Vector = new Vector3(0, 0, -1.5f);
             }
 
             public void Control(UserInput userInput)
             {
-                if (!_joint8.RotorBlock.IsAttached)
+                if (!_joint7.RotorBlock.IsAttached)
                 {
                     Attachment = ArmAttachment.Empty;
                 }
@@ -101,59 +95,58 @@ namespace IngameScript
                     }
                 }
 
-                _seg7Vector = HasAttachment ? _seg7VectorAttached : _seg7VectorDetached;
+                _seg6Vector = HasAttachment ? _seg6VectorAttached : _seg6VectorDetached;
 
                 switch (Attachment)
                 {
                     case ArmAttachment.Welder:
-                        _seg8Vector = _seg8VectorWelder;
+                        _seg7Vector = _seg7VectorWelder;
                         break;
                     case ArmAttachment.Grinder:
-                        _seg8Vector = _seg8VectorGrinder;
+                        _seg7Vector = _seg7VectorGrinder;
                         break;
                     case ArmAttachment.Drill:
-                        _seg8Vector = _seg8VectorDrill;
+                        _seg7Vector = _seg7VectorDrill;
                         break;
                     case ArmAttachment.Connector:
-                        _seg8Vector = _seg8VectorConnector;
+                        _seg7Vector = _seg7VectorConnector;
                         break;
                     case ArmAttachment.Magnet:
-                        _seg8Vector = _seg8VectorMagnet;
+                        _seg7Vector = _seg7VectorMagnet;
                         break;
                     case ArmAttachment.Undefined:
-                        _seg8Vector = _seg8VectorUndefined;
+                        _seg7Vector = _seg7VectorUndefined;
                         break;
                     case ArmAttachment.Empty:
-                        _seg8Vector = _seg8VectorEmpty;
+                        _seg7Vector = _seg7VectorEmpty;
                         break;
                     default:
-                        _seg8Vector = Vector3.Zero;
+                        _seg7Vector = Vector3.Zero;
                         break;
                 }
 
-                Matrix H0 = Matrix.Identity;
+                Matrix H0 = Matrix.CreateRotationY(_joint0.CurrentAngle);
                 H0.Translation = _baseVector;
-                Matrix H1 = Matrix.CreateRotationY(_joint1.CurrentAngle);
-                H1.Translation = _seg0Vector + -1f * _joint0.CurrentExtension * H0.Backward;
-                Matrix H2 = Matrix.CreateRotationX(_joint2.CurrentAngle);
+                Matrix H1 = Matrix.CreateRotationX(_joint1.CurrentAngle);
+                H1.Translation = _seg0Vector;
+                Matrix H2 = Matrix.Identity;
                 H2.Translation = _seg1Vector;
-                Matrix H3 = Matrix.Identity;
-                H3.Translation = _seg2Vector;
-                Matrix H4 = Matrix.CreateRotationX(_joint4.CurrentAngle);
-                H4.Translation = _seg3Vector + -1f * _joint3.CurrentExtension * H3.Backward;
-                Matrix H5 = Matrix.Identity;
-                H5.Translation = _seg4Vector;
-                Matrix H6 = Matrix.CreateRotationY(_joint6.CurrentAngle);
-                H6.Translation = _seg5Vector + -1f * _joint5.CurrentExtension * H5.Backward;
-                Matrix H7 = Matrix.CreateRotationX(_joint7.CurrentAngle);
+                Matrix H3 = Matrix.CreateRotationX(_joint3.CurrentAngle);
+                H3.Translation = _seg2Vector + -1f * _joint2.CurrentExtension * H2.Backward;
+                Matrix H4 = Matrix.Identity;
+                H4.Translation = _seg3Vector;
+                Matrix H5 = Matrix.CreateRotationY(_joint5.CurrentAngle);
+                H5.Translation = _seg4Vector + -1f * _joint4.CurrentExtension * H4.Backward;
+                Matrix H6 = Matrix.CreateRotationX(_joint6.CurrentAngle);
+                H6.Translation = _seg5Vector;
+                Matrix H7 = HasAttachment ? Matrix.CreateRotationZ(_joint7.CurrentAngle) : Matrix.Identity;
                 H7.Translation = _seg6Vector;
-                Matrix H8 = Matrix.CreateRotationZ(_joint8.CurrentAngle);
+                Matrix H8 = Matrix.Identity;
                 H8.Translation = _seg7Vector;
-                Matrix H9 = Matrix.Identity;
-                H9.Translation = _seg8Vector;
 
-                Matrix HT = H9 * H8 * H7 * H6 * H5 * H4 * H3 * H2 * H1 * H0;
+                Matrix HT = H8 * H7 * H6 * H5 * H4 * H3 * H2 * H1 * H0;
                 Vector3 currentCoord = HT.Translation;
+
                 EEPosition = currentCoord;
 
                 Matrix H0_1 = H1 * H0;
@@ -163,71 +156,66 @@ namespace IngameScript
                 Matrix H0_5 = H5 * H0_4;
                 Matrix H0_6 = H6 * H0_5;
                 Matrix H0_7 = H7 * H0_6;
-                Matrix H0_8 = H8 * H0_7;
 
-                Vector3 J0v = -1f * H0.Backward;
-                Vector3 J0w = Vector3.Zero;
+                Vector3 J0v = Vector3.Cross(H0.Up, currentCoord - H0.Translation);
+                //float J0w = Vector3.Dot(H0.Up, H0_5.Right);
+                Vector3 J0w = Vector3.TransformNormal(H0.Up, Matrix.Transpose(HT.GetOrientation()));
                 double[] J0 = new double[6] { J0v.X, J0v.Y, J0v.Z, J0w.X, J0w.Y, J0w.Z };
 
-                Vector3 J1v = Vector3.Cross(H0_1.Up, currentCoord - H0_1.Translation);
-                //Vector3 J1w = H0_1.Up;
-                Vector3 J1w = Vector3.TransformNormal(H0_1.Up, Matrix.Transpose(HT.GetOrientation()));
+                Vector3 J1v = Vector3.Cross(H0_1.Right, currentCoord - H0_1.Translation);
+                //float J1w = Vector3.Dot(H0_1.Right, H0_5.Right);
+                Vector3 J1w = Vector3.TransformNormal(H0_1.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J1 = new double[6] { J1v.X, J1v.Y, J1v.Z, J1w.X, J1w.Y, J1w.Z };
 
-                Vector3 J2v = Vector3.Cross(H0_2.Right, currentCoord - H0_2.Translation);
-                //Vector3 J2w = H0_2.Right;
-                Vector3 J2w = Vector3.TransformNormal(H0_2.Right, Matrix.Transpose(HT.GetOrientation()));
+                Vector3 J2v = -1f * H0_2.Backward;
+                //float J2w = 0f;
+                Vector3 J2w = Vector3.Zero;
                 double[] J2 = new double[6] { J2v.X, J2v.Y, J2v.Z, J2w.X, J2w.Y, J2w.Z };
 
-                Vector3 J3v = -1f * H0_3.Backward;
-                Vector3 J3w = Vector3.Zero;
+                Vector3 J3v = Vector3.Cross(H0_3.Right, currentCoord - H0_3.Translation);
+                //float J3w = Vector3.Dot(H0_3.Right, H0_5.Right);
+                Vector3 J3w = Vector3.TransformNormal(H0_3.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J3 = new double[6] { J3v.X, J3v.Y, J3v.Z, J3w.X, J3w.Y, J3w.Z };
 
-                Vector3 J4v = Vector3.Cross(H0_4.Right, currentCoord - H0_4.Translation);
-                //Vector3 J4w = H0_4.Right;
-                Vector3 J4w = Vector3.TransformNormal(H0_4.Right, Matrix.Transpose(HT.GetOrientation()));
+                Vector3 J4v = -1f * H0_4.Backward;
+                //float J4w = 0f;
+                Vector3 J4w = Vector3.Zero;
                 double[] J4 = new double[6] { J4v.X, J4v.Y, J4v.Z, J4w.X, J4w.Y, J4w.Z };
 
-                Vector3 J5v = -1f * H0_5.Backward;
-                Vector3 J5w = Vector3.Zero;
+                Vector3 J5v = Vector3.Cross(H0_5.Up, currentCoord - H0_5.Translation);
+                //float J5w = 1f;
+                Vector3 J5w = Vector3.TransformNormal(H0_5.Up, Matrix.Transpose(HT.GetOrientation()));
                 double[] J5 = new double[6] { J5v.X, J5v.Y, J5v.Z, J5w.X, J5w.Y, J5w.Z };
 
-                Vector3 J6v = Vector3.Cross(H0_6.Up, currentCoord - H0_6.Translation);
-                //Vector3 J6w = H0_6.Up;
-                Vector3 J6w = Vector3.TransformNormal(H0_6.Up, Matrix.Transpose(HT.GetOrientation()));
+                Vector3 J6v = Vector3.Cross(H0_6.Right, currentCoord - H0_6.Translation);
+                Vector3 J6w = Vector3.TransformNormal(H0_6.Right, Matrix.Transpose(HT.GetOrientation()));
                 double[] J6 = new double[6] { J6v.X, J6v.Y, J6v.Z, J6w.X, J6w.Y, J6w.Z };
 
-                Vector3 J7v = Vector3.Cross(H0_7.Right, currentCoord - H0_7.Translation);
-                //Vector3 J7w = H0_7.Right;
-                Vector3 J7w = Vector3.TransformNormal(H0_7.Right, Matrix.Transpose(HT.GetOrientation()));
+                Vector3 J7v = Vector3.Cross(H0_7.Backward, currentCoord - H0_7.Translation);
+                Vector3 J7w = Vector3.TransformNormal(H0_7.Backward, Matrix.Transpose(HT.GetOrientation()));
                 double[] J7 = new double[6] { J7v.X, J7v.Y, J7v.Z, J7w.X, J7w.Y, J7w.Z };
 
-                Vector3 J8v = Vector3.Cross(H0_8.Backward, currentCoord - H0_8.Translation);
-                //Vector3 J8w = H0_8.Backward;
-                Vector3 J8w = Vector3.TransformNormal(H0_8.Backward, Matrix.Transpose(HT.GetOrientation()));
-                double[] J8 = new double[6] { J8v.X, J8v.Y, J8v.Z, J8w.X, J8w.Y, J8w.Z };
-
-                double[,] J = new double[6, 9]
+                double[,] J = new double[6, 8]
                 {
-                    { J0[0], J1[0], J2[0], J3[0], J4[0], J5[0], J6[0], J7[0], J8[0] },
-                    { J0[1], J1[1], J2[1], J3[1], J4[1], J5[1], J6[1], J7[1], J8[1] },
-                    { J0[2], J1[2], J2[2], J3[2], J4[2], J5[2], J6[2], J7[2], J8[2] },
-                    { J0[3], J1[3], J2[3], J3[3], J4[3], J5[3], J6[3], J7[3], J8[3] },
-                    { J0[4], J1[4], J2[4], J3[4], J4[4], J5[4], J6[4], J7[4], J8[4] },
-                    { J0[5], J1[5], J2[5], J3[5], J4[5], J5[5], J6[5], J7[5], J8[5] }
+                    { J0[0], J1[0], J2[0], J3[0], J4[0], J5[0], J6[0], J7[0] },
+                    { J0[1], J1[1], J2[1], J3[1], J4[1], J5[1], J6[1], J7[1] },
+                    { J0[2], J1[2], J2[2], J3[2], J4[2], J5[2], J6[2], J7[2] },
+                    { J0[3], J1[3], J2[3], J3[3], J4[3], J5[3], J6[3], J7[3] },
+                    { J0[4], J1[4], J2[4], J3[4], J4[4], J5[4], J6[4], J7[4] },
+                    { J0[5], J1[5], J2[5], J3[5], J4[5], J5[5], J6[5], J7[5] }
                 };
 
                 if (!HasAttachment)
                 {
                     MyMath.SetRow(J, 5, new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 });
-                    MyMath.SetColumn(J, 8, new double[6] { 0, 0, 0, 0, 0, 0 });
+                    MyMath.SetColumn(J, 7, new double[6] { 0, 0, 0, 0, 0, 0 });
                 }
 
                 double[] taskWeights = new double[6] { 1, 1, 1, 10, 10, 10 };
-                double[] jointWeights = new double[9] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                double[] jointWeights = new double[8] { 1, 1, 1, 1, 1, 1, 1, 1 };
 
                 double[] inputSignal = new double[6];
-                double[] inputSignalNull = new double[9];
+                double[] inputSignalNull = new double[8];
 
                 Vector3 trans0 = Vector3.Zero;
                 Vector3 trans1 = Vector3.Zero;
@@ -288,59 +276,39 @@ namespace IngameScript
                             if (userInput.APress) rot0 = 0.2f * rotYDir;
                             else if (userInput.DPress) rot0 = -0.2f * rotYDir;
 
-                            if (userInput.QPress) rot2 = 0.2f * transZDir;
-                            else if (userInput.EPress) rot2 = -0.2f * transZDir;
+                            if (userInput.QPress) rot2 = 0.2f * rotZDir;
+                            else if (userInput.EPress) rot2 = -0.2f * rotZDir;
                             break;
                         }
                     case ArmControlMode.Pose:
                         {
-                            if (userInput.WPress)
+                            if (userInput.QPress)
                             {
-                                inputSignalNull[0] = 1.0f;
-                                jointWeights[0] = double.MaxValue;
+                                inputSignalNull[2] = -1f;
+                                inputSignalNull[4] = -1f;
+                                jointWeights[2] = double.MaxValue;
+                                jointWeights[4] = double.MaxValue;
+
                             }
-                            else if (userInput.SPress)
+                            else if (userInput.EPress)
                             {
-                                inputSignalNull[0] = -1.0f;
-                                jointWeights[0] = double.MaxValue;
+                                inputSignalNull[2] = 1f;
+                                inputSignalNull[4] = 1f;
+                                jointWeights[2] = double.MaxValue;
+                                jointWeights[4] = double.MaxValue;
                             }
 
-                            if (userInput.APress)
+                            if (userInput.SpacePress)
                             {
                                 inputSignalNull[1] = 0.2f;
                                 jointWeights[1] = double.MaxValue;
                             }
-                            else if (userInput.DPress)
+                            else if (userInput.CPress)
                             {
                                 inputSignalNull[1] = -0.2f;
                                 jointWeights[1] = double.MaxValue;
                             }
 
-                            if (userInput.SpacePress)
-                            {
-                                inputSignalNull[4] = 0.2f;
-                                jointWeights[4] = double.MaxValue;
-                            }
-                            else if (userInput.CPress)
-                            {
-                                inputSignalNull[4] = -0.2f;
-                                jointWeights[4] = double.MaxValue;
-                            }
-
-                            if (userInput.QPress)
-                            {
-                                inputSignalNull[3] = -1f;
-                                inputSignalNull[5] = -1f;
-                                jointWeights[3] = double.MaxValue;
-                                jointWeights[5] = double.MaxValue;
-                            }
-                            else if (userInput.EPress)
-                            {
-                                inputSignalNull[3] = 1f;
-                                inputSignalNull[5] = 1f;
-                                jointWeights[3] = double.MaxValue;
-                                jointWeights[5] = double.MaxValue;
-                            }
                             break;
                         }
                 }
@@ -358,7 +326,7 @@ namespace IngameScript
                 if (!HasAttachment)
                 {
                     inputSignal[5] = 0f;
-                    inputSignalNull[8] = 0f;
+                    inputSignalNull[7] = 0f;
                 }
 
                 double[,] J_pseudoInv = MyMath.DampedWeightedPseudoInverseWide(J, taskWeights, jointWeights, 0.1f);
@@ -414,12 +382,6 @@ namespace IngameScript
                 if (_joint7.IsSaturated)
                 {
                     jointWeights[7] = double.MaxValue;
-                    oob = true;
-                }
-                _joint8.Velocity = (float)totalOutputSignal[8];
-                if (_joint8.IsSaturated)
-                {
-                    jointWeights[8] = double.MaxValue;
                     oob = true;
                 }
 
@@ -480,12 +442,6 @@ namespace IngameScript
                         totalOutputSignal[7] = 0f;
                         _joint7.Velocity = 0f;
                     }
-                    _joint8.Velocity = (float)totalOutputSignal[8];
-                    if (_joint8.IsSaturated)
-                    {
-                        totalOutputSignal[8] = 0f;
-                        _joint8.Velocity = 0f;
-                    }
                     oob = false;
                 }
 
@@ -514,7 +470,6 @@ namespace IngameScript
                     _joint5.Velocity = 0f;
                     _joint6.Velocity = 0f;
                     _joint7.Velocity = 0f;
-                    _joint8.Velocity = 0f;
                 }
             }
 
