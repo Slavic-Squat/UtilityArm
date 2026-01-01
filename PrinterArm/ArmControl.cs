@@ -58,6 +58,7 @@ namespace IngameScript
             public TranslationMode TranslationMode { get; private set; } = TranslationMode.World;
             public ArmAttachment Attachment { get; private set; } = ArmAttachment.Undefined;
             public bool HasAttachment => Attachment != ArmAttachment.Empty;
+            public bool RestrictedMode { get; private set; } = false;
             public Vector3 EEPosition { get; private set; }
             public string ID { get; private set; }
 
@@ -227,6 +228,10 @@ namespace IngameScript
 
                 double[] taskWeights = new double[6] { 1, 1, 1, 10, 10, 10 };
                 double[] jointWeights = new double[8] { 1, 1, 1, 1, 1, 1, 1, 1 };
+                if (RestrictedMode)
+                {
+                    jointWeights[1] = double.MaxValue;
+                }
 
                 double[] inputSignal = new double[6];
                 double[] inputSignalNull = new double[8];
@@ -503,6 +508,11 @@ namespace IngameScript
             public void CycleControlMode()
             {
                 ControlMode = ArmEnumsHelper.NextArmControlMode(ControlMode);
+            }
+
+            public void ToggleRestrictedMode()
+            {
+                RestrictedMode = !RestrictedMode;
             }
 
             public void CycleAttachment()

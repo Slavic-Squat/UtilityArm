@@ -125,6 +125,7 @@ namespace IngameScript
                 {
                     sb.AppendLine($"    - TRANS MODE: {ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode)}");
                 }
+                sb.AppendLine($"  RESTRICTED MODE: {(_armControl.RestrictedMode ? "ON" : "OFF")}");
                 sb.AppendLine($"  ATTACHMENT: {ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment)}");
                 sb.AppendLine("  ARM POS:");
                 sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
