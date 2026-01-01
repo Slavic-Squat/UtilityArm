@@ -34,7 +34,7 @@ namespace IngameScript
 
             private void Init()
             {
-                string armID = Config.Get("Config", "ArmID").ToString("PrinterArm");
+                string armID = Config.Get("Config", "ArmID").ToString("Printer");
                 Config.Set("Config", "ArmID", armID);
                 PrinterArm = new PrinterArm(armID);
 

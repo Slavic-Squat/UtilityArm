@@ -66,7 +66,13 @@ namespace IngameScript
                 ID = id.ToUpper();
                 Piston basePiston0 = new Piston($"{ID} BASE PISTON 0");
                 Piston basePiston1 = new Piston($"{ID} BASE PISTON 1");
-                _basePistons = new PistonSeries(basePiston0, basePiston1);
+                Piston basePiston2 = new Piston($"{ID} BASE PISTON 2");
+                Piston basePiston3 = new Piston($"{ID} BASE PISTON 3");
+                Piston basePiston4 = new Piston($"{ID} BASE PISTON 4");
+                Piston basePiston5 = new Piston($"{ID} BASE PISTON 5");
+                Piston basePiston6 = new Piston($"{ID} BASE PISTON 6");
+                Piston basePiston7 = new Piston($"{ID} BASE PISTON 7");
+                _basePistons = new PistonSeries(basePiston0, basePiston1, basePiston2, basePiston3, basePiston4, basePiston5, basePiston6, basePiston7);
                 _joint0 = new Rotor($"{ID} ARM JOINT 0");
                 _joint1 = new Rotor($"{ID} ARM JOINT 1");
                 Piston joint2_0 = new Piston($"{ID} ARM JOINT 2_0");
