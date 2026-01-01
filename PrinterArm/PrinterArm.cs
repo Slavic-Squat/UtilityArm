@@ -51,7 +51,7 @@ namespace IngameScript
                     throw new Exception("RC for arm not found!\n");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
-                _display = surfaceProvider.GetSurface(1);
+                _display = surfaceProvider.GetSurface(0);
 
                 _userInput = new UserInput(_armController);
                 _remoteInput = new UserInput(_remoteControl);
