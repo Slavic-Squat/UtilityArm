@@ -114,6 +114,12 @@ namespace IngameScript
                 _armControl.CycleTranslationMode();
             }
 
+            public void ToggleRestrictedMode()
+            {
+                if (!ArmCtrl) return;
+                _armControl.ToggleRestrictedMode();
+            }
+
             public string GetOverview()
             {
                 StringBuilder sb = new StringBuilder();
