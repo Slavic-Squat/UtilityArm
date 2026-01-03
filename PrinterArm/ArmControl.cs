@@ -30,11 +30,11 @@ namespace IngameScript
             private Vector3 _seg0Vector;
             private Rotor _joint1;
             private Vector3 _seg1Vector;
-            private Piston _joint2;
+            private PistonSeries _joint2;
             private Vector3 _seg2Vector;
             private Rotor _joint3;
             private Vector3 _seg3Vector;
-            private Piston _joint4;
+            private PistonSeries _joint4;
             private Vector3 _seg4Vector;
             private Rotor _joint5;
             private Vector3 _seg5Vector;
@@ -58,6 +58,7 @@ namespace IngameScript
             public TranslationMode TranslationMode { get; private set; } = TranslationMode.World;
             public ArmAttachment Attachment { get; private set; } = ArmAttachment.Undefined;
             public bool HasAttachment => Attachment != ArmAttachment.Empty;
+            public bool RestrictedMode { get; private set; } = false;
             public Vector3 EEPosition { get; private set; }
             public string ID { get; private set; }
 
@@ -68,21 +69,29 @@ namespace IngameScript
                 Piston basePiston1 = new Piston($"{ID} BASE PISTON 1");
                 Piston basePiston2 = new Piston($"{ID} BASE PISTON 2");
                 Piston basePiston3 = new Piston($"{ID} BASE PISTON 3");
-                _basePistons = new PistonSeries(basePiston0, basePiston1, basePiston2, basePiston3);
+                Piston basePiston4 = new Piston($"{ID} BASE PISTON 4");
+                Piston basePiston5 = new Piston($"{ID} BASE PISTON 5");
+                Piston basePiston6 = new Piston($"{ID} BASE PISTON 6");
+                Piston basePiston7 = new Piston($"{ID} BASE PISTON 7");
+                _basePistons = new PistonSeries(basePiston0, basePiston1, basePiston2, basePiston3, basePiston4, basePiston5, basePiston6, basePiston7);
                 _joint0 = new Rotor($"{ID} ARM JOINT 0");
                 _joint1 = new Rotor($"{ID} ARM JOINT 1");
-                _joint2 = new Piston($"{ID} ARM JOINT 2");
+                Piston joint2_0 = new Piston($"{ID} ARM JOINT 2_0");
+                Piston joint2_1 = new Piston($"{ID} ARM JOINT 2_1");
+                _joint2 = new PistonSeries(joint2_0, joint2_1);
                 _joint3 = new Rotor($"{ID} ARM JOINT 3");
-                _joint4 = new Piston($"{ID} ARM JOINT 4");
+                Piston joint4_0 = new Piston($"{ID} ARM JOINT 4_0");
+                Piston joint4_1 = new Piston($"{ID} ARM JOINT 4_1");
+                _joint4 = new PistonSeries(joint4_0, joint4_1);
                 _joint5 = new Rotor($"{ID} ARM JOINT 5");
                 _joint6 = new Rotor($"{ID} ARM JOINT 6");
                 _joint7 = new Rotor($"{ID} ARM JOINT 7");
 
-                _baseVector = new Vector3(0, -1.65f, 0);
-                _seg0Vector = new Vector3(4.0f, -1.25f, 0);
-                _seg1Vector = new Vector3(1.25f, 0, -6.4f);
+                _baseVector = new Vector3(0, 1.45f, 0);
+                _seg0Vector = new Vector3(4.0f, 1.25f, 0);
+                _seg1Vector = new Vector3(1.25f, 0, -11.6f);
                 _seg2Vector = new Vector3(-4.0f, 0, -1.25f);
-                _seg3Vector = new Vector3(-1.25f, 0, -6.4f);
+                _seg3Vector = new Vector3(-1.25f, 0, -11.6f);
                 _seg4Vector = new Vector3(0, 0, -1.25f);
                 _seg5Vector = new Vector3(0, 0, -1.5f);
             }
@@ -219,6 +228,10 @@ namespace IngameScript
 
                 double[] taskWeights = new double[6] { 1, 1, 1, 10, 10, 10 };
                 double[] jointWeights = new double[8] { 1, 1, 1, 1, 1, 1, 1, 1 };
+                if (RestrictedMode)
+                {
+                    jointWeights[1] = double.MaxValue;
+                }
 
                 double[] inputSignal = new double[6];
                 double[] inputSignalNull = new double[8];
@@ -315,11 +328,11 @@ namespace IngameScript
                                 jointWeights[1] = double.MaxValue;
                             }
 
-                            if (userInput.WPress)
+                            if (userInput.APress)
                             {
                                 _basePistons.Velocity = 1f;
                             }
-                            else if (userInput.SPress)
+                            else if (userInput.DPress)
                             {
                                 _basePistons.Velocity = -1f;
                             }
@@ -495,6 +508,11 @@ namespace IngameScript
             public void CycleControlMode()
             {
                 ControlMode = ArmEnumsHelper.NextArmControlMode(ControlMode);
+            }
+
+            public void ToggleRestrictedMode()
+            {
+                RestrictedMode = !RestrictedMode;
             }
 
             public void CycleAttachment()

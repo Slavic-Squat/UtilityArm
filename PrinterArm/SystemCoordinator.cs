@@ -43,6 +43,7 @@ namespace IngameScript
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
                 CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
                 CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
+                CommandHandler0.RegisterCommand("TOGGLE_RESTRICTED_MODE", (args) => ToggleRestrictedMode());
             }
 
             public void Run(double time)
@@ -79,6 +80,11 @@ namespace IngameScript
             public void CycleTranslationMode()
             {
                 PrinterArm.CycleTranslationMode();
+            }
+
+            public void ToggleRestrictedMode()
+            {
+                PrinterArm.ToggleRestrictedMode();
             }
         }
     }

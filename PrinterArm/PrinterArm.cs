@@ -51,11 +51,10 @@ namespace IngameScript
                     throw new Exception("RC for arm not found!\n");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
-                _display = surfaceProvider.GetSurface(1);
+                _display = surfaceProvider.GetSurface(0);
 
                 _userInput = new UserInput(_armController);
                 _remoteInput = new UserInput(_remoteControl);
-
                 _armControl = new ArmControl(ID);
             }
 
@@ -115,6 +114,12 @@ namespace IngameScript
                 _armControl.CycleTranslationMode();
             }
 
+            public void ToggleRestrictedMode()
+            {
+                if (!ArmCtrl) return;
+                _armControl.ToggleRestrictedMode();
+            }
+
             public string GetOverview()
             {
                 StringBuilder sb = new StringBuilder();
@@ -126,6 +131,7 @@ namespace IngameScript
                 {
                     sb.AppendLine($"    - TRANS MODE: {ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode)}");
                 }
+                sb.AppendLine($"  RESTRICTED MODE: {(_armControl.RestrictedMode ? "ON" : "OFF")}");
                 sb.AppendLine($"  ATTACHMENT: {ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment)}");
                 sb.AppendLine("  ARM POS:");
                 sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
