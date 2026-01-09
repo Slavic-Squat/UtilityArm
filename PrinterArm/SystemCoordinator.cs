@@ -39,7 +39,6 @@ namespace IngameScript
                 PrinterArm = new PrinterArm(armID);
 
                 CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
-                CommandHandler0.RegisterCommand("TOGGLE_REMOTE_CTRL", (args) => ToggleRemoteControl());
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
                 CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
                 CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
@@ -60,11 +59,6 @@ namespace IngameScript
             public void ToggleArmControl()
             {
                 PrinterArm.ToggleArmControl();
-            }
-
-            public void ToggleRemoteControl()
-            {
-                PrinterArm.ToggleRemoteControl();
             }
 
             public void CycleArmControlMode()

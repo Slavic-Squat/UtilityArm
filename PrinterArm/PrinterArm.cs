@@ -17,6 +17,7 @@ using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
+using static IngameScript.Program;
 
 namespace IngameScript
 {
@@ -25,14 +26,11 @@ namespace IngameScript
         public class PrinterArm
         {
             private IMyShipController _armController;
-            private IMyRemoteControl _remoteControl;
             private IMyTextSurface _display;
-            private UserInput _userInput;
-            private UserInput _remoteInput;
+            private UserInput _armInput;
             private ArmControl _armControl;
 
             public bool ArmCtrl { get; private set; } = false;
-            public bool RemoteCtrl { get; private set; } = false;
             public double Time { get; private set; }
             public string ID { get; private set; }
             public PrinterArm(string id)
@@ -44,17 +42,10 @@ namespace IngameScript
                     DebugWrite("Controller for arm not found!\n", true);
                     throw new Exception("Controller for arm not found!\n");
                 }
-                _remoteControl = AllGridBlocks.Where(b => b is IMyRemoteControl && b.CustomName.ToUpper().Contains($"{ID} ARM RC")).FirstOrDefault() as IMyRemoteControl;
-                if (_remoteControl == null)
-                {
-                    DebugWrite("RC for arm not found!\n", true);
-                    throw new Exception("RC for arm not found!\n");
-                }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
                 _display = surfaceProvider.GetSurface(0);
 
-                _userInput = new UserInput(_armController);
-                _remoteInput = new UserInput(_remoteControl);
+                _armInput = new UserInput(_armController);
                 _armControl = new ArmControl(ID);
             }
 
@@ -65,35 +56,20 @@ namespace IngameScript
                     Time = time;
                     return;
                 }
-                _userInput.Run(time);
-                _remoteInput.Run(time);
+                _armInput.Run(time);
                 _display.WriteText(GetOverview());
 
-                if (!ArmCtrl)
+                if (ArmCtrl)
                 {
-                    return;
+                    _armControl.Control(_armInput);
                 }
 
-                if (!RemoteCtrl)
-                {
-                    _armControl.Control(_userInput);
-                }
-                else
-                {
-                    _armControl.Control(_remoteInput);
-                }
                 Time = time;
             }
 
             public void ToggleArmControl()
             {
                 ArmCtrl = !ArmCtrl;
-            }
-
-            public void ToggleRemoteControl()
-            {
-                if (!ArmCtrl) return;
-                RemoteCtrl = !RemoteCtrl;
             }
 
             public void CycleArmControlMode()
@@ -125,7 +101,6 @@ namespace IngameScript
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("[ARM OVERVIEW]");
                 sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  REMOTE CTRL: {(RemoteCtrl ? "ON" : "OFF")}");
                 sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
                 if (_armControl.ControlMode == ArmControlMode.Translate)
                 {
