@@ -74,25 +74,22 @@ namespace IngameScript
 
             public void CycleArmControlMode()
             {
-                if (!ArmCtrl) return;
                 _armControl.CycleControlMode();
             }
 
             public void CycleAttachment()
             {
-                if (!ArmCtrl) return;
                 _armControl.CycleAttachment();
             }
 
             public void CycleTranslationMode()
             {
-                if (!ArmCtrl && _armControl.ControlMode != ArmControlMode.Translate) return;
+                if (_armControl.ControlMode != ArmControlMode.Translate) return;
                 _armControl.CycleTranslationMode();
             }
 
             public void ToggleRestrictedMode()
             {
-                if (!ArmCtrl) return;
                 _armControl.ToggleRestrictedMode();
             }
 
