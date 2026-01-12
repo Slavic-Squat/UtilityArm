@@ -26,7 +26,8 @@ namespace IngameScript
         {
             Translate,
             Rotate,
-            Pose,
+            Null,
+            Joint,
             Undefined
         }
 
@@ -51,7 +52,7 @@ namespace IngameScript
         {
             private static readonly ArmAttachment[] _armAttachmentCycles = new ArmAttachment[] { ArmAttachment.Welder, ArmAttachment.Grinder, ArmAttachment.Drill, ArmAttachment.Connector, ArmAttachment.Magnet };
 
-            private static readonly ArmControlMode[] _armControlModeCycles = new ArmControlMode[] { ArmControlMode.Translate, ArmControlMode.Rotate, ArmControlMode.Pose };
+            private static readonly ArmControlMode[] _armControlModeCycles = new ArmControlMode[] { ArmControlMode.Translate, ArmControlMode.Rotate, ArmControlMode.Null, ArmControlMode.Joint };
 
             private static readonly TranslationMode[] _translationModeCycles = new TranslationMode[] { TranslationMode.Local, TranslationMode.World };
 
@@ -85,7 +86,8 @@ namespace IngameScript
                 {
                     case ArmControlMode.Translate: return "TRANS";
                     case ArmControlMode.Rotate: return "ROT";
-                    case ArmControlMode.Pose: return "POSE";
+                    case ArmControlMode.Null: return "NULL";
+                    case ArmControlMode.Joint: return "JOINT";
                     default: return "N/A";
                 }
             }
@@ -120,7 +122,8 @@ namespace IngameScript
                 {
                     case "TRANS": return ArmControlMode.Translate;
                     case "ROT": return ArmControlMode.Rotate;
-                    case "POSE": return ArmControlMode.Pose;
+                    case "NULL": return ArmControlMode.Null;
+                    case "JOINT": return ArmControlMode.Joint;
                     default: return ArmControlMode.Undefined;
                 }
             }

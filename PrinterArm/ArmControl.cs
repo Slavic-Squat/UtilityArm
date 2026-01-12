@@ -141,21 +141,21 @@ namespace IngameScript
                 }
 
                 Matrix H0 = Matrix.CreateRotationY(_joint0.CurrentAngle);
-                H0.Translation = _baseVector;
+                H0.Translation = _baseVector + _joint0.RotorBlock.Displacement * H0.Up;
                 Matrix H1 = Matrix.CreateRotationX(_joint1.CurrentAngle);
-                H1.Translation = _seg0Vector;
+                H1.Translation = _seg0Vector + _joint1.RotorBlock.Displacement * H1.Right;
                 Matrix H2 = Matrix.Identity;
-                H2.Translation = _seg1Vector;
+                H2.Translation = _seg1Vector + _joint2.CurrentExtension * H2.Forward;
                 Matrix H3 = Matrix.CreateRotationX(_joint3.CurrentAngle);
-                H3.Translation = _seg2Vector + -1f * _joint2.CurrentExtension * H2.Backward;
+                H3.Translation = _seg2Vector + _joint3.RotorBlock.Displacement * H3.Left;
                 Matrix H4 = Matrix.Identity;
-                H4.Translation = _seg3Vector;
+                H4.Translation = _seg3Vector + _joint4.CurrentExtension * H4.Forward;
                 Matrix H5 = Matrix.CreateRotationY(_joint5.CurrentAngle);
-                H5.Translation = _seg4Vector + -1f * _joint4.CurrentExtension * H4.Backward;
+                H5.Translation = _seg4Vector;
                 Matrix H6 = Matrix.CreateRotationX(_joint6.CurrentAngle);
                 H6.Translation = _seg5Vector;
                 Matrix H7 = HasAttachment ? Matrix.CreateRotationZ(_joint7.CurrentAngle) : Matrix.Identity;
-                H7.Translation = _seg6Vector;
+                H7.Translation = _seg6Vector + _joint7.RotorBlock.Displacement * H7.Forward;
                 Matrix H8 = Matrix.Identity;
                 H8.Translation = _seg7Vector;
 
@@ -171,6 +171,66 @@ namespace IngameScript
                 Matrix H0_5 = H5 * H0_4;
                 Matrix H0_6 = H6 * H0_5;
                 Matrix H0_7 = H7 * H0_6;
+
+                if (ControlMode == ArmControlMode.Joint)
+                {
+                    if (userInput.APress)
+                    {
+                        _joint0.Velocity = 0.25f;
+                    }
+                    else if (userInput.DPress)
+                    {
+                        _joint0.Velocity = -0.25f;
+                    }
+                    else
+                    {
+                        _joint0.Velocity = 0f;
+                    }
+
+                    if (userInput.WPress)
+                    {
+                        _joint3.Velocity = 0.25f;
+                    }
+                    else if (userInput.SPress)
+                    {
+                        _joint3.Velocity = -0.25f;
+                    }
+                    else
+                    {
+                        _joint3.Velocity = 0f;
+                    }
+
+                    if (userInput.SpacePress)
+                    {
+                        _joint1.Velocity = 0.25f;
+                    }
+                    else if (userInput.CPress)
+                    {
+                        _joint1.Velocity = -0.25f;
+                    }
+                    else
+                    {
+                        _joint1.Velocity = 0f;
+                    }
+
+                    if (userInput.QPress)
+                    {
+                        _joint2.Velocity = -1f;
+                        _joint4.Velocity = -1f;
+                    }
+                    else if (userInput.EPress)
+                    {
+                        _joint2.Velocity = 1f;
+                        _joint4.Velocity = 1f;
+                    }
+                    else
+                    {
+                        _joint2.Velocity = 0f;
+                        _joint4.Velocity = 0f;
+                    }
+
+                    return;
+                }
 
                 Vector3 J0v = Vector3.Cross(H0.Up, currentCoord - H0.Translation);
                 //float J0w = Vector3.Dot(H0.Up, H0_5.Right);
@@ -299,7 +359,7 @@ namespace IngameScript
                             else if (userInput.EPress) rot2 = -0.2f * rotZDir;
                             break;
                         }
-                    case ArmControlMode.Pose:
+                    case ArmControlMode.Null:
                         {
                             if (userInput.QPress)
                             {
