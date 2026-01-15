@@ -35,8 +35,8 @@ namespace IngameScript
         public static int DebugCounter { get; set; } = 0;
 
         private static List<IMyTerminalBlock> _allGridBlocks = new List<IMyTerminalBlock>();
-        private const string _programName = "PrinterArm";
-        private const string _programVersion = "1.08";
+        private const string _programName = "UtilityArm";
+        private const string _programVersion = "1.09";
         private static string _gridBlockTag;
 
         private SystemCoordinator _systemCoordinator;

@@ -24,7 +24,7 @@ namespace IngameScript
     {
         public class SystemCoordinator
         {
-            public PrinterArm PrinterArm { get; private set; }
+            public UtilityArm UtilityArm { get; private set; }
             public double Time { get; private set; }
 
             public SystemCoordinator()
@@ -34,9 +34,9 @@ namespace IngameScript
 
             private void Init()
             {
-                string armID = Config.Get("Config", "ArmID").ToString("Printer");
+                string armID = Config.Get("Config", "ArmID").ToString("Utility");
                 Config.Set("Config", "ArmID", armID);
-                PrinterArm = new PrinterArm(armID);
+                UtilityArm = new UtilityArm(armID);
 
                 CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
@@ -52,33 +52,33 @@ namespace IngameScript
                     Time = time;
                     return;
                 }
-                PrinterArm.Run(time);
+                UtilityArm.Run(time);
                 Time = time;
             }
 
             public void ToggleArmControl()
             {
-                PrinterArm.ToggleArmControl();
+                UtilityArm.ToggleArmControl();
             }
 
             public void CycleArmControlMode()
             {
-                PrinterArm.CycleArmControlMode();
+                UtilityArm.CycleArmControlMode();
             }
 
             public void CycleAttachment()
             {
-                PrinterArm.CycleAttachment();
+                UtilityArm.CycleAttachment();
             }
 
             public void CycleTranslationMode()
             {
-                PrinterArm.CycleTranslationMode();
+                UtilityArm.CycleTranslationMode();
             }
 
             public void ToggleRestrictedMode()
             {
-                PrinterArm.ToggleRestrictedMode();
+                UtilityArm.ToggleRestrictedMode();
             }
         }
     }

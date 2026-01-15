@@ -23,7 +23,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class PrinterArm
+        public class UtilityArm
         {
             private IMyShipController _armController;
             private IMyTextSurface _display;
@@ -33,7 +33,7 @@ namespace IngameScript
             public bool ArmCtrl { get; private set; } = false;
             public double Time { get; private set; }
             public string ID { get; private set; }
-            public PrinterArm(string id)
+            public UtilityArm(string id)
             {
                 ID = id.ToUpper();
                 _armController = AllGridBlocks.Where(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")).FirstOrDefault() as IMyShipController;
