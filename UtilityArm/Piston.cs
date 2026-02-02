@@ -24,7 +24,7 @@ namespace IngameScript
     {
         public class Piston
         {
-            public float CurrentExtension => PistonBlock.CurrentPosition;
+            public float Extension => PistonBlock.CurrentPosition;
             public float MinExtension
             {
                 get
@@ -59,8 +59,8 @@ namespace IngameScript
                     PistonBlock.Velocity = value;
                 }
             }
-            public bool IsMaxed => CurrentExtension >= MaxExtension - 0.1f;
-            public bool IsMinned => CurrentExtension <= MinExtension + 0.1f;
+            public bool IsMaxed => Extension >= MaxExtension - 0.1f;
+            public bool IsMinned => Extension <= MinExtension + 0.1f;
             public bool IsSaturated
             {
                 get

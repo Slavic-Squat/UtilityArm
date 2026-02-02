@@ -140,21 +140,21 @@ namespace IngameScript
                         break;
                 }
 
-                Matrix H0 = Matrix.CreateRotationY(_joint0.CurrentAngle);
+                Matrix H0 = Matrix.CreateRotationY(_joint0.AngleRad);
                 H0.Translation = _baseVector + _joint0.RotorBlock.Displacement * H0.Up;
-                Matrix H1 = Matrix.CreateRotationX(_joint1.CurrentAngle);
+                Matrix H1 = Matrix.CreateRotationX(_joint1.AngleRad);
                 H1.Translation = _seg0Vector + _joint1.RotorBlock.Displacement * H1.Right;
                 Matrix H2 = Matrix.Identity;
-                H2.Translation = _seg1Vector + _joint2.CurrentExtension * H2.Forward;
-                Matrix H3 = Matrix.CreateRotationX(_joint3.CurrentAngle);
+                H2.Translation = _seg1Vector + _joint2.Extension * H2.Forward;
+                Matrix H3 = Matrix.CreateRotationX(_joint3.AngleRad);
                 H3.Translation = _seg2Vector + _joint3.RotorBlock.Displacement * H3.Left;
                 Matrix H4 = Matrix.Identity;
-                H4.Translation = _seg3Vector + _joint4.CurrentExtension * H4.Forward;
-                Matrix H5 = Matrix.CreateRotationY(_joint5.CurrentAngle);
+                H4.Translation = _seg3Vector + _joint4.Extension * H4.Forward;
+                Matrix H5 = Matrix.CreateRotationY(_joint5.AngleRad);
                 H5.Translation = _seg4Vector;
-                Matrix H6 = Matrix.CreateRotationX(_joint6.CurrentAngle);
+                Matrix H6 = Matrix.CreateRotationX(_joint6.AngleRad);
                 H6.Translation = _seg5Vector;
-                Matrix H7 = HasAttachment ? Matrix.CreateRotationZ(_joint7.CurrentAngle) : Matrix.Identity;
+                Matrix H7 = HasAttachment ? Matrix.CreateRotationZ(_joint7.AngleRad) : Matrix.Identity;
                 H7.Translation = _seg6Vector + _joint7.RotorBlock.Displacement * H7.Forward;
                 Matrix H8 = Matrix.Identity;
                 H8.Translation = _seg7Vector;
@@ -176,41 +176,41 @@ namespace IngameScript
                 {
                     if (userInput.APress)
                     {
-                        _joint0.Velocity = 0.25f;
+                        _joint0.VelocityRad = 0.25f;
                     }
                     else if (userInput.DPress)
                     {
-                        _joint0.Velocity = -0.25f;
+                        _joint0.VelocityRad = -0.25f;
                     }
                     else
                     {
-                        _joint0.Velocity = 0f;
+                        _joint0.VelocityRad = 0f;
                     }
 
                     if (userInput.WPress)
                     {
-                        _joint3.Velocity = 0.25f;
+                        _joint3.VelocityRad = 0.25f;
                     }
                     else if (userInput.SPress)
                     {
-                        _joint3.Velocity = -0.25f;
+                        _joint3.VelocityRad = -0.25f;
                     }
                     else
                     {
-                        _joint3.Velocity = 0f;
+                        _joint3.VelocityRad = 0f;
                     }
 
                     if (userInput.SpacePress)
                     {
-                        _joint1.Velocity = 0.25f;
+                        _joint1.VelocityRad = 0.25f;
                     }
                     else if (userInput.CPress)
                     {
-                        _joint1.Velocity = -0.25f;
+                        _joint1.VelocityRad = -0.25f;
                     }
                     else
                     {
-                        _joint1.Velocity = 0f;
+                        _joint1.VelocityRad = 0f;
                     }
 
                     if (userInput.QPress)
@@ -428,13 +428,13 @@ namespace IngameScript
                 double[] totalOutputSignal = MyMath.AddVectors(outputSignal, outputSignalNull);
                 bool oob = false;
 
-                _joint0.Velocity = (float)totalOutputSignal[0];
+                _joint0.VelocityRad = (float)totalOutputSignal[0];
                 if (_joint0.IsSaturated)
                 {
                     jointWeights[0] = double.MaxValue;
                     oob = true;
                 }
-                _joint1.Velocity = (float)totalOutputSignal[1];
+                _joint1.VelocityRad = (float)totalOutputSignal[1];
                 if (_joint1.IsSaturated)
                 {
                     jointWeights[1] = double.MaxValue;
@@ -446,7 +446,7 @@ namespace IngameScript
                     jointWeights[2] = double.MaxValue;
                     oob = true;
                 }
-                _joint3.Velocity = (float)totalOutputSignal[3];
+                _joint3.VelocityRad = (float)totalOutputSignal[3];
                 if (_joint3.IsSaturated)
                 {
                     jointWeights[3] = double.MaxValue;
@@ -458,19 +458,19 @@ namespace IngameScript
                     jointWeights[4] = double.MaxValue;
                     oob = true;
                 }
-                _joint5.Velocity = (float)totalOutputSignal[5];
+                _joint5.VelocityRad = (float)totalOutputSignal[5];
                 if (_joint5.IsSaturated)
                 {
                     jointWeights[5] = double.MaxValue;
                     oob = true;
                 }
-                _joint6.Velocity = (float)totalOutputSignal[6];
+                _joint6.VelocityRad = (float)totalOutputSignal[6];
                 if (_joint6.IsSaturated)
                 {
                     jointWeights[6] = double.MaxValue;
                     oob = true;
                 }
-                _joint7.Velocity = (float)totalOutputSignal[7];
+                _joint7.VelocityRad = (float)totalOutputSignal[7];
                 if (_joint7.IsSaturated)
                 {
                     jointWeights[7] = double.MaxValue;
@@ -486,17 +486,17 @@ namespace IngameScript
                     outputSignalNull = MyMath.MultiplyMatrixVector(N, inputSignalNull);
                     totalOutputSignal = MyMath.AddVectors(outputSignal, outputSignalNull);
 
-                    _joint0.Velocity = (float)totalOutputSignal[0];
+                    _joint0.VelocityRad = (float)totalOutputSignal[0];
                     if (_joint0.IsSaturated)
                     {
                         totalOutputSignal[0] = 0f;
-                        _joint0.Velocity = 0f;
+                        _joint0.VelocityRad = 0f;
                     }
-                    _joint1.Velocity = (float)totalOutputSignal[1];
+                    _joint1.VelocityRad = (float)totalOutputSignal[1];
                     if (_joint1.IsSaturated)
                     {
                         totalOutputSignal[1] = 0f;
-                        _joint1.Velocity = 0f;
+                        _joint1.VelocityRad = 0f;
                     }
                     _joint2.Velocity = (float)totalOutputSignal[2];
                     if (_joint2.IsSaturated)
@@ -504,11 +504,11 @@ namespace IngameScript
                         totalOutputSignal[2] = 0f;
                         _joint2.Velocity = 0f;
                     }
-                    _joint3.Velocity = (float)totalOutputSignal[3];
+                    _joint3.VelocityRad = (float)totalOutputSignal[3];
                     if (_joint3.IsSaturated)
                     {
                         totalOutputSignal[3] = 0f;
-                        _joint3.Velocity = 0f;
+                        _joint3.VelocityRad = 0f;
                     }
                     _joint4.Velocity = (float)totalOutputSignal[4];
                     if (_joint4.IsSaturated)
@@ -516,23 +516,23 @@ namespace IngameScript
                         totalOutputSignal[4] = 0f;
                         _joint4.Velocity = 0f;
                     }
-                    _joint5.Velocity = (float)totalOutputSignal[5];
+                    _joint5.VelocityRad = (float)totalOutputSignal[5];
                     if (_joint5.IsSaturated)
                     {
                         totalOutputSignal[5] = 0f;
-                        _joint5.Velocity = 0f;
+                        _joint5.VelocityRad = 0f;
                     }
-                    _joint6.Velocity = (float)totalOutputSignal[6];
+                    _joint6.VelocityRad = (float)totalOutputSignal[6];
                     if (_joint6.IsSaturated)
                     {
                         totalOutputSignal[6] = 0f;
-                        _joint6.Velocity = 0f;
+                        _joint6.VelocityRad = 0f;
                     }
-                    _joint7.Velocity = (float)totalOutputSignal[7];
+                    _joint7.VelocityRad = (float)totalOutputSignal[7];
                     if (_joint7.IsSaturated)
                     {
                         totalOutputSignal[7] = 0f;
-                        _joint7.Velocity = 0f;
+                        _joint7.VelocityRad = 0f;
                     }
                     oob = false;
                 }
@@ -554,14 +554,14 @@ namespace IngameScript
 
                 if (oob)
                 {
-                    _joint0.Velocity = 0f;
-                    _joint1.Velocity = 0f;
+                    _joint0.VelocityRad = 0f;
+                    _joint1.VelocityRad = 0f;
                     _joint2.Velocity = 0f;
-                    _joint3.Velocity = 0f;
+                    _joint3.VelocityRad = 0f;
                     _joint4.Velocity = 0f;
-                    _joint5.Velocity = 0f;
-                    _joint6.Velocity = 0f;
-                    _joint7.Velocity = 0f;
+                    _joint5.VelocityRad = 0f;
+                    _joint6.VelocityRad = 0f;
+                    _joint7.VelocityRad = 0f;
                 }
             }
 

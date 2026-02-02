@@ -25,7 +25,7 @@ namespace IngameScript
         public class PistonSeries
         {
             public IReadOnlyList<Piston> Pistons => _pistons;
-            public float CurrentExtension => _pistons.Sum(p => p.CurrentExtension);
+            public float Extension => _pistons.Sum(p => p.Extension);
             public float MinExtension => _pistons.Sum(p => p.MinExtension);
             public float MaxExtension => _pistons.Sum(p => p.MaxExtension);
             public float Range => MaxExtension - MinExtension;
@@ -40,23 +40,23 @@ namespace IngameScript
                     _targetVelocity = value;
                     if (value < 0)
                     {
-                        float totalRemaining = CurrentExtension - MinExtension;
+                        float totalRemaining = Extension - MinExtension;
                         if (totalRemaining == 0)
                         {
                             _pistons.ForEach(p => p.Velocity = 0);
                             return;
                         }
-                        _pistons.ForEach(p => p.Velocity = (p.CurrentExtension - p.MinExtension) / totalRemaining * value);
+                        _pistons.ForEach(p => p.Velocity = (p.Extension - p.MinExtension) / totalRemaining * value);
                     }
                     else if (value > 0)
                     {
-                        float totalRemaining = MaxExtension - CurrentExtension;
+                        float totalRemaining = MaxExtension - Extension;
                         if (totalRemaining == 0)
                         {
                             _pistons.ForEach(p => p.Velocity = 0);
                             return;
                         }
-                        _pistons.ForEach(p => p.Velocity = (p.MaxExtension - p.CurrentExtension) / totalRemaining * value);
+                        _pistons.ForEach(p => p.Velocity = (p.MaxExtension - p.Extension) / totalRemaining * value);
                     }
                     else
                     {
