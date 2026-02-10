@@ -29,6 +29,7 @@ namespace IngameScript
             private IMyTextSurface _display;
             private UserInput _armInput;
             private ArmControl _armControl;
+            private StringBuilder _sb = new StringBuilder();
 
             public bool ArmCtrl { get; private set; } = false;
             public double Time { get; private set; }
@@ -39,8 +40,8 @@ namespace IngameScript
                 _armController = AllGridBlocks.Where(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")).FirstOrDefault() as IMyShipController;
                 if (_armController == null)
                 {
-                    DebugWrite("Controller for arm not found!\n", true);
-                    throw new Exception("Controller for arm not found!\n");
+                    DebugEcho("Controller for arm not found!");
+                    throw new Exception("Controller for arm not found!");
                 }
                 IMyTextSurfaceProvider surfaceProvider = _armController as IMyTextSurfaceProvider;
                 _display = surfaceProvider.GetSurface(0);
@@ -57,7 +58,9 @@ namespace IngameScript
                     return;
                 }
                 _armInput.Run(time);
-                _display.WriteText(GetOverview());
+                _sb.Clear();
+                AppendOverview(_sb);
+                _display.WriteText(_sb.ToString());
 
                 if (ArmCtrl)
                 {
@@ -93,21 +96,19 @@ namespace IngameScript
                 _armControl.ToggleRestrictedMode();
             }
 
-            public string GetOverview()
+            public void AppendOverview(StringBuilder sb)
             {
-                StringBuilder sb = new StringBuilder();
                 sb.AppendLine("[ARM OVERVIEW]");
-                sb.AppendLine($"  ARM CTRL: {(ArmCtrl ? "ON" : "OFF")}");
-                sb.AppendLine($"  CTRL MODE: {ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode)}");
+                sb.Append("  ARM CTRL: ").AppendLine(ArmCtrl ? "ON" : "OFF"));
+                sb.Append("  CTRL MODE: ").AppendLine(ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode));
                 if (_armControl.ControlMode == ArmControlMode.Translate)
                 {
-                    sb.AppendLine($"    - TRANS MODE: {ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode)}");
+                    sb.Append("    - TRANS MODE: ").AppendLine(ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode));
                 }
-                sb.AppendLine($"  RESTRICTED MODE: {(_armControl.RestrictedMode ? "ON" : "OFF")}");
-                sb.AppendLine($"  ATTACHMENT: {ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment)}");
+                sb.Append("  RESTRICTED MODE: ").AppendLine(_armControl.RestrictedMode ? "ON" : "OFF");
+                sb.Append("  ATTACHMENT: ").AppendLine(ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment));
                 sb.AppendLine("  ARM POS:");
-                sb.AppendLine($"    - X: {_armControl.EEPosition.X:F2} m, Y: {_armControl.EEPosition.Y:F2} m, Z: {_armControl.EEPosition.Z:F2} m");
-                return sb.ToString();
+                sb.AppendFormat("    - X: {0:F2} m, Y: {1:F2} m, Z: {2:F2} m", _armControl.EEPosition.X, _armControl.EEPosition.Y, _armControl.EEPosition.Z);
             }
         }
     }
