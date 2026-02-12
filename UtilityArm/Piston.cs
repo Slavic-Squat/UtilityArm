@@ -86,7 +86,6 @@ namespace IngameScript
                 PistonBlock = AllGridBlocks.Where(b => b is IMyPistonBase && b.CustomName.ToUpper().Contains(blockName)).FirstOrDefault() as IMyPistonBase;
                 if (PistonBlock == null)
                 {
-                    DebugEcho($"Piston block '{blockName}' not found!");
                     throw new ArgumentException($"Piston block '{blockName}' not found!");
                 }                    
             }
@@ -95,7 +94,6 @@ namespace IngameScript
             {
                 if (pistonBlock == null)
                 {
-                    DebugEcho($"Piston block is null!");
                     throw new ArgumentException($"Piston block is null!");
                 }
                     

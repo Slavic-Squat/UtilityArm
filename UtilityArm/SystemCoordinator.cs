@@ -25,8 +25,8 @@ namespace IngameScript
         public class SystemCoordinator
         {
             public UtilityArm UtilityArm { get; private set; }
-            public double Time { get; private set; }
 
+            private double _time = 0;
             public SystemCoordinator()
             {
                 Init();                
@@ -42,18 +42,17 @@ namespace IngameScript
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
                 CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
                 CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
-                CommandHandler0.RegisterCommand("TOGGLE_RESTRICTED_MODE", (args) => ToggleRestrictedMode());
             }
 
             public void Run(double time)
             {
-                if (Time == 0)
+                if (_time == 0)
                 {
-                    Time = time;
+                    _time = time;
                     return;
                 }
                 UtilityArm.Run(time);
-                Time = time;
+                _time = time;
             }
 
             public void ToggleArmControl()
@@ -74,11 +73,6 @@ namespace IngameScript
             public void CycleTranslationMode()
             {
                 UtilityArm.CycleTranslationMode();
-            }
-
-            public void ToggleRestrictedMode()
-            {
-                UtilityArm.ToggleRestrictedMode();
             }
         }
     }
