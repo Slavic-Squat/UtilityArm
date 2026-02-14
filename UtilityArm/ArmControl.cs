@@ -26,6 +26,7 @@ namespace IngameScript
         {
             private PistonSeries _basePistonsA;
             private PistonSeries _basePistonsB;
+            private Vector3 _baseVector;
             private Rotor _joint0;
             private Vector3 _seg0Vector;
             private Rotor _joint1A;
@@ -39,11 +40,11 @@ namespace IngameScript
             private Rotor _joint4;
             private Vector3 _seg4Vector;
 
-            private Vector3 _seg4VectorWelder = new Vector3(0, -3.65f, 0);
-            private Vector3 _seg4VectorGrinder = new Vector3(0, -3.65f, 0);
-            private Vector3 _seg4VectorDrill = new Vector3(0, -3.65f, 0);
-            private Vector3 _seg4VectorConnector = new Vector3(0, -1.65f, 0);
-            private Vector3 _seg4VectorMagnet = new Vector3(0, -2.15f, 0);
+            private Vector3 _seg4VectorWelder = new Vector3(0, -3f, 0);
+            private Vector3 _seg4VectorGrinder = new Vector3(0, -3f, 0);
+            private Vector3 _seg4VectorDrill = new Vector3(0, -3f, 0);
+            private Vector3 _seg4VectorConnector = new Vector3(0, -1f, 0);
+            private Vector3 _seg4VectorMagnet = new Vector3(0, -1.5f, 0);
             private Vector3 _seg4VectorEmpty = Vector3.Zero;
 
             private float _translationSpeed = 1f;
@@ -73,10 +74,11 @@ namespace IngameScript
                 _joint3 = new Rotor($"{ID} ARM JOINT 3");
                 _joint4 = new Rotor($"{ID} ARM JOINT 4");
 
-                _seg0Vector = new Vector3(2.5f, 2.7f, 0);
-                _seg1Vector = new Vector3(0.2f, 0, -50f);
-                _seg2Vector = new Vector3(-2.7f, -2.5f, -50f);
-                _seg3Vector = new Vector3(0, -1.0f, 0);
+                _baseVector = new Vector3(0, 2.7f, 0);
+                _seg0Vector = new Vector3(0, 1.25f, 0);
+                _seg1Vector = new Vector3(0, 0, -50f);
+                _seg2Vector = new Vector3(0, -2.5f, -50f);
+                _seg3Vector = new Vector3(0, -1.65f, 0);
             }
 
             public void Control(UserInput userInput)
@@ -109,12 +111,13 @@ namespace IngameScript
                 }
 
                 Matrix H0 = Matrix.CreateRotationY(_joint0.AngleRad);
+                H0.Translation = _baseVector + _joint0.RotorBlock.Displacement * H0.Up;
                 Matrix H1 = Matrix.CreateRotationX(_joint1A.AngleRad);
-                H1.Translation = _seg0Vector + _joint0.RotorBlock.Displacement * H1.Up;
+                H1.Translation = _seg0Vector;
                 Matrix H2 = Matrix.CreateRotationX(_joint2A.AngleRad);
-                H2.Translation = _seg1Vector + _joint1A.RotorBlock.Displacement * H2.Right;
+                H2.Translation = _seg1Vector;
                 Matrix H3 = Matrix.CreateRotationX(_joint3.AngleRad);
-                H3.Translation = _seg2Vector + _joint2A.RotorBlock.Displacement * H3.Left;
+                H3.Translation = _seg2Vector;
                 Matrix H4 = HasAttachment ? Matrix.CreateRotationY(_joint4.AngleRad) : Matrix.Identity;
                 H4.Translation = _seg3Vector;
                 Matrix H5 = Matrix.Identity;
@@ -366,7 +369,7 @@ namespace IngameScript
 
                 MyVector achieved;
                 MyMathExt.Multiply(ref J, ref outputSignal, out achieved);
-                MyVector tolerances = new MyVector(5) { V0 = 0.1f, V1 = 0.1f, V2 = 0.1f, V3 = 0.05f, V4 = 0.05f };
+                MyVector tolerances = new MyVector(5) { V0 = 0.1, V1 = 0.1, V2 = 0.1, V3 = 0.05, V4 = 0.05 };
 
                 for (int i = 0; i < 5; i++)
                 {

@@ -80,19 +80,17 @@ namespace IngameScript
             public void SetTranslationSpeed(string speedStr)
             {
                 float speed;
-                if (float.TryParse(speedStr, out speed))
-                {
-                    UtilityArm.SetTranslationSpeed(speed);
-                }
+                if (!float.TryParse(speedStr, out speed))
+                    return;
+                UtilityArm.SetTranslationSpeed(speed);
             }
 
             public void AdjustTranslationSpeed(string deltaStr)
             {
                 float delta;
-                if (float.TryParse(deltaStr, out delta))
-                {
-                    UtilityArm.AdjustTranslationSpeed(delta);
-                }
+                if (!float.TryParse(deltaStr, out delta))
+                    return;
+                UtilityArm.AdjustTranslationSpeed(delta);
             }
         }
     }
