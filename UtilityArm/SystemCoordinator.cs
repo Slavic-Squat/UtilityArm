@@ -29,7 +29,7 @@ namespace IngameScript
             private double _time = 0;
             public SystemCoordinator()
             {
-                Init();                
+                Init();
             }
 
             private void Init()
@@ -42,6 +42,8 @@ namespace IngameScript
                 CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
                 CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
                 CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
+                CommandHandler0.RegisterCommand("SET_TRANS_SPEED", (args) => { if (args.Length > 0) SetTranslationSpeed(args[0]); });
+                CommandHandler0.RegisterCommand("ADJUST_TRANS_SPEED", (args) => { if (args.Length > 0) AdjustTranslationSpeed(args[0]); });
             }
 
             public void Run(double time)
@@ -73,6 +75,24 @@ namespace IngameScript
             public void CycleTranslationMode()
             {
                 UtilityArm.CycleTranslationMode();
+            }
+
+            public void SetTranslationSpeed(string speedStr)
+            {
+                float speed;
+                if (float.TryParse(speedStr, out speed))
+                {
+                    UtilityArm.SetTranslationSpeed(speed);
+                }
+            }
+
+            public void AdjustTranslationSpeed(string deltaStr)
+            {
+                float delta;
+                if (float.TryParse(deltaStr, out delta))
+                {
+                    UtilityArm.AdjustTranslationSpeed(delta);
+                }
             }
         }
     }

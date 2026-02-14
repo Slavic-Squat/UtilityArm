@@ -90,6 +90,18 @@ namespace IngameScript
                 _armControl.CycleTranslationMode();
             }
 
+            public void SetTranslationSpeed(float speed)
+            {
+                if (_armControl.ControlMode != ArmControlMode.Translate) return;
+                _armControl.SetTranslationSpeed(speed);
+            }
+
+            public void AdjustTranslationSpeed(float delta)
+            {
+                if (_armControl.ControlMode != ArmControlMode.Translate) return;
+                _armControl.AdjustTranslationSpeed(delta);
+            }
+
             public void AppendOverview(StringBuilder sb)
             {
                 sb.AppendLine("[ARM OVERVIEW]");
@@ -98,6 +110,7 @@ namespace IngameScript
                 if (_armControl.ControlMode == ArmControlMode.Translate)
                 {
                     sb.Append("    - TRANS MODE: ").AppendLine(ArmEnumsHelper.GetTranslationModeStr(_armControl.TranslationMode));
+                    sb.Append("    - SPEED: ").AppendFormat("{0:F2} m/s", _armControl.TranslationSpeed).AppendLine();
                 }
                 sb.Append("  ATTACHMENT: ").AppendLine(ArmEnumsHelper.GetAttachmentStr(_armControl.Attachment));
                 sb.AppendLine("  ARM POS:");

@@ -64,6 +64,7 @@ namespace IngameScript
             Config.Set("Config", "BlockTag", _blockTag);
 
             CommandHandler0 = new CommandHandler();
+            CommandHandler0.RegisterCommand("INIT", (args) => Init());
 
             MePb.CustomData = Config.ToString();
         }
