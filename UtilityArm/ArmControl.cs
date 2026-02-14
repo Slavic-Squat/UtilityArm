@@ -119,7 +119,7 @@ namespace IngameScript
                 Matrix H3 = Matrix.CreateRotationX(_joint3.AngleRad);
                 H3.Translation = _seg2Vector;
                 Matrix H4 = HasAttachment ? Matrix.CreateRotationY(_joint4.AngleRad) : Matrix.Identity;
-                H4.Translation = _seg3Vector;
+                H4.Translation = _seg3Vector + (HasAttachment ? _joint4.RotorBlock.Displacement * H4.Down : Vector3.Zero);
                 Matrix H5 = Matrix.Identity;
                 H5.Translation = _seg4Vector;
 

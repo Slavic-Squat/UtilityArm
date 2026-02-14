@@ -31,8 +31,7 @@ namespace IngameScript
             private ArmControl _armControl;
             private StringBuilder _sb = new StringBuilder();
             private double _time = 0;
-
-            public bool ArmCtrl { get; private set; } = false;
+            private bool _armCtrl = false;
             public string ID { get; private set; }
             public UtilityArm(string id)
             {
@@ -61,7 +60,7 @@ namespace IngameScript
                 AppendOverview(_sb);
                 _display.WriteText(_sb.ToString());
 
-                if (ArmCtrl)
+                if (_armCtrl)
                 {
                     _armControl.Control(_armInput);
                 }
@@ -71,7 +70,7 @@ namespace IngameScript
 
             public void ToggleArmControl()
             {
-                ArmCtrl = !ArmCtrl;
+                _armCtrl = !_armCtrl;
             }
 
             public void CycleArmControlMode()
@@ -105,7 +104,7 @@ namespace IngameScript
             public void AppendOverview(StringBuilder sb)
             {
                 sb.AppendLine("[ARM OVERVIEW]");
-                sb.Append("  ARM CTRL: ").AppendLine(ArmCtrl ? "ON" : "OFF");
+                sb.Append("  ARM CTRL: ").AppendLine(_armCtrl ? "ON" : "OFF");
                 sb.Append("  CTRL MODE: ").AppendLine(ArmEnumsHelper.GetArmControlModeStr(_armControl.ControlMode));
                 if (_armControl.ControlMode == ArmControlMode.Translate)
                 {
