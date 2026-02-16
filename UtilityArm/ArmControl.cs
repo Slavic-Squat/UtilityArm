@@ -266,17 +266,14 @@ namespace IngameScript
                 Vector3 trans1 = Vector3.Zero;
                 Vector3 trans2 = Vector3.Zero;
 
-                Vector3 rot0 = Vector3.Zero;
-                Vector3 rot1 = Vector3.Zero;
+                float rotX = 0f;
+                float rotY = 0f;
 
                 TranslationMode = HasAttachment ? TranslationMode : TranslationMode.World;
 
                 Vector3 transXDir;
                 Vector3 transYDir;
                 Vector3 transZDir;
-
-                Vector3 rotXDir = Vector3.Right;
-                Vector3 rotYDir = Vector3.Up;
 
                 switch (TranslationMode)
                 {
@@ -313,23 +310,23 @@ namespace IngameScript
                         }
                     case ArmControlMode.Rotate:
                         {
-                            if (userInput.SpacePress) rot1 = 0.2f * rotXDir;
-                            else if (userInput.CPress) rot1 = -0.2f * rotXDir;
-
-                            if (userInput.APress) rot0 = 0.2f * rotYDir;
-                            else if (userInput.DPress) rot0 = -0.2f * rotYDir;
+                            if (userInput.APress) rotY = 0.2f;
+                            else if (userInput.DPress) rotY = -0.2f;
                             break;
                         }
                 }
 
+                double pitch = Math.Asin(MathHelper.Clamp(H0_3.Forward.Y, -1, 1));
+                double pitchCorrection = -1f * pitch;
+                rotX += (float)pitchCorrection;
+
                 Vector3 transInput = trans0 + trans1 + trans2;
-                Vector3 rotInput = rot0 + rot1;
 
                 inputSignal[0] = transInput.X;
                 inputSignal[1] = transInput.Y;
                 inputSignal[2] = transInput.Z;
-                inputSignal[3] = rotInput.X;
-                inputSignal[4] = rotInput.Y;
+                inputSignal[3] = rotX;
+                inputSignal[4] = rotY;
 
                 if (!HasAttachment)
                 {
