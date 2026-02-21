@@ -36,7 +36,7 @@ namespace IngameScript
             public UtilityArm(string id)
             {
                 ID = id.ToUpper();
-                _armController = AllGridBlocks.Where(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")).FirstOrDefault() as IMyShipController;
+                _armController = AllGridBlocks.FirstOrDefault(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")) as IMyShipController;
                 if (_armController == null)
                 {
                     throw new Exception("Controller for arm not found!");
@@ -58,7 +58,7 @@ namespace IngameScript
                 _armInput.Run(time);
                 _sb.Clear();
                 AppendOverview(_sb);
-                _display.WriteText(_sb.ToString());
+                _display.WriteText(_sb);
 
                 if (_armCtrl)
                 {

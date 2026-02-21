@@ -34,7 +34,7 @@ namespace IngameScript
 
         private static List<IMyTerminalBlock> _allGridBlocks = new List<IMyTerminalBlock>();
         private const string _programName = "UtilityArm";
-        private const string _programVersion = "1.16";
+        private const string _programVersion = "1.17";
         private static string _blockTag;
 
         private SystemCoordinator _systemCoordinator;
@@ -88,7 +88,7 @@ namespace IngameScript
                 _debugStringBuilder.Append("Max Run Time: ").AppendFormat("{0:F2}ms", _runTimeInfo.Max).AppendLine();
                 _debugStringBuilder.Append("Avg Run Time: ").AppendFormat("{0:F2}ms", _runTimeInfo.Average).AppendLine();
                 _debugStringBuilder.Append("--------------------------------------");
-                _debugScreen.WriteText(_debugStringBuilder.ToString());
+                _debugScreen.WriteText(_debugStringBuilder);
             }
 
             if (argument != null)
