@@ -26,7 +26,7 @@ namespace IngameScript
         {
             public UtilityArm UtilityArm { get; private set; }
 
-            private double _time = 0;
+            private double _lastRunTime = 0;
             public SystemCoordinator()
             {
                 Init();
@@ -38,23 +38,23 @@ namespace IngameScript
                 Config.Set("Config", "ArmID", armID);
                 UtilityArm = new UtilityArm(armID);
 
-                CommandHandler0.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
-                CommandHandler0.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
-                CommandHandler0.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
-                CommandHandler0.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
-                CommandHandler0.RegisterCommand("SET_TRANS_SPEED", (args) => { if (args.Length > 0) SetTranslationSpeed(args[0]); });
-                CommandHandler0.RegisterCommand("ADJUST_TRANS_SPEED", (args) => { if (args.Length > 0) AdjustTranslationSpeed(args[0]); });
+                CommandHandlerInst.RegisterCommand("TOGGLE_ARM_CTRL", (args) => ToggleArmControl());
+                CommandHandlerInst.RegisterCommand("CYCLE_ARM_CTRL_MODE", (args) => CycleArmControlMode());
+                CommandHandlerInst.RegisterCommand("CYCLE_ATTACHMENT", (args) => CycleAttachment());
+                CommandHandlerInst.RegisterCommand("CYCLE_TRANSLATION_MODE", (args) => CycleTranslationMode());
+                CommandHandlerInst.RegisterCommand("SET_TRANS_SPEED", (args) => { if (args.Length > 0) SetTranslationSpeed(args[0]); });
+                CommandHandlerInst.RegisterCommand("ADJUST_TRANS_SPEED", (args) => { if (args.Length > 0) AdjustTranslationSpeed(args[0]); });
             }
 
             public void Run(double time)
             {
-                if (_time == 0)
+                if (_lastRunTime == 0)
                 {
-                    _time = time;
+                    _lastRunTime = time;
                     return;
                 }
                 UtilityArm.Run(time);
-                _time = time;
+                _lastRunTime = time;
             }
 
             public void ToggleArmControl()

@@ -30,13 +30,13 @@ namespace IngameScript
             private UserInput _armInput;
             private ArmControl _armControl;
             private StringBuilder _sb = new StringBuilder();
-            private double _time = 0;
+            private double _lastRunTime = 0;
             private bool _armCtrl = false;
             public string ID { get; private set; }
             public UtilityArm(string id)
             {
                 ID = id.ToUpper();
-                _armController = AllGridBlocks.FirstOrDefault(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")) as IMyShipController;
+                _armController = AllBlocks.FirstOrDefault(b => b is IMyShipController && b.CustomName.ToUpper().Contains($"{ID} ARM CONTROLLER")) as IMyShipController;
                 if (_armController == null)
                 {
                     throw new Exception("Controller for arm not found!");
@@ -50,9 +50,9 @@ namespace IngameScript
 
             public void Run(double time)
             {
-                if (_time == 0)
+                if (_lastRunTime == 0)
                 {
-                    _time = time;
+                    _lastRunTime = time;
                     return;
                 }
                 _armInput.Run(time);
@@ -65,7 +65,7 @@ namespace IngameScript
                     _armControl.Control(_armInput);
                 }
 
-                _time = time;
+                _lastRunTime = time;
             }
 
             public void ToggleArmControl()
