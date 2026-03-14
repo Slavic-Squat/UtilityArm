@@ -33,7 +33,7 @@ namespace IngameScript
 
         private static List<IMyTerminalBlock> _allBlocks = new List<IMyTerminalBlock>();
         private const string _programName = "UtilityArm";
-        private const string _programVersion = "1.18";
+        private const string _programVersion = "1.19";
 
         private SystemCoordinator _systemCoordinator;
         private bool _isInitialized = false;
@@ -50,7 +50,7 @@ namespace IngameScript
             IGCS = IGC;
             RuntimeInfo = Runtime;
             MePb = Me;
-            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+            Runtime.UpdateFrequency = UpdateFrequency.Once;
 
             Config = new MyIni();
             if (!Config.TryParse(MePb.CustomData))
@@ -84,7 +84,7 @@ namespace IngameScript
                 _debugStringBuilder.Append("Last Run Time: ").AppendFormat("{0:F2}ms", RuntimeInfo.LastRunTimeMs).AppendLine();
                 _debugStringBuilder.Append("Max Run Time: ").AppendFormat("{0:F2}ms", _runTimeInfo.Max).AppendLine();
                 _debugStringBuilder.Append("Avg Run Time: ").AppendFormat("{0:F2}ms", _runTimeInfo.Average).AppendLine();
-                _debugStringBuilder.AppendLine("--------------------------------------");
+                _debugStringBuilder.AppendLine("--------------------");
                 _debugStringBuilder.Append(_lastExceptionMsg);
                 _debugScreen.WriteText(_debugStringBuilder);
             }
@@ -105,6 +105,7 @@ namespace IngameScript
 
         private void Init()
         {
+            Runtime.UpdateFrequency = UpdateFrequency.None;
             _isInitialized = false;
             _lastExceptionMsg = string.Empty;
             _allBlocks.Clear();
@@ -134,7 +135,7 @@ namespace IngameScript
                 CommandHandlerInst.Clear();
                 Config.Clear();
                 _lastExceptionMsg = ex.Message;
-
+                _debugScreen.WriteText(_lastExceptionMsg, true);
                 CommandHandlerInst.RegisterCommand("INIT", (args) => Init());
 
                 return;
@@ -142,6 +143,7 @@ namespace IngameScript
 
             Me.CustomData = Config.ToString();
             _isInitialized = true;
+            Runtime.UpdateFrequency = UpdateFrequency.Update1;
         }
     }
 }
