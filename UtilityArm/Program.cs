@@ -33,7 +33,7 @@ namespace IngameScript
 
         private static List<IMyTerminalBlock> _allBlocks = new List<IMyTerminalBlock>();
         private const string _programName = "UtilityArm";
-        private const string _programVersion = "1.19";
+        private const string _programVersion = "1.20";
 
         private SystemCoordinator _systemCoordinator;
         private bool _isInitialized = false;
@@ -50,7 +50,7 @@ namespace IngameScript
             IGCS = IGC;
             RuntimeInfo = Runtime;
             MePb = Me;
-            Runtime.UpdateFrequency = UpdateFrequency.Once;
+            Runtime.UpdateFrequency = UpdateFrequency.None;
 
             Config = new MyIni();
             if (!Config.TryParse(MePb.CustomData))
@@ -105,7 +105,6 @@ namespace IngameScript
 
         private void Init()
         {
-            Runtime.UpdateFrequency = UpdateFrequency.None;
             _isInitialized = false;
             _lastExceptionMsg = string.Empty;
             _allBlocks.Clear();
@@ -137,13 +136,13 @@ namespace IngameScript
                 _lastExceptionMsg = ex.Message;
                 _debugScreen.WriteText(_lastExceptionMsg, true);
                 CommandHandlerInst.RegisterCommand("INIT", (args) => Init());
+                Runtime.UpdateFrequency = UpdateFrequency.None;
 
                 return;
             }
 
-            Me.CustomData = Config.ToString();
-            _isInitialized = true;
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
+            _isInitialized = true;
         }
     }
 }
